@@ -102,7 +102,9 @@ class StateMachine {
                 }
             }
 
-            return allStates + allSymbols + initialStates + finalStates + transitions
+            var returnValue = allStates + allSymbols + initialStates + finalStates + transitions
+            returnValue = returnValue.reversed().replaceFirst("\n","").reversed()
+            return returnValue
         }
 
         // Generate DOT code to represent the automata
@@ -357,6 +359,19 @@ class StateMachine {
             }
 
             return lines
+        }
+
+        // Safely load a new stateMachine
+        fun load(filePath: String) {
+            clear()
+            loadStates(filePath)
+        }
+
+        private fun clear() {
+            fileContent = ""
+            symbols.clear()
+            initialLabels.clear()
+            finalLabels.clear()
         }
 
     }

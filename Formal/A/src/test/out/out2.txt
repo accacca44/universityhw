@@ -1,0 +1,10 @@
+S A B FINAL
+a b c
+S
+FINAL
+S a S
+S a A
+S a FINAL
+A b B
+A b FINAL
+B c A

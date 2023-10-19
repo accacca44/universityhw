@@ -1,3 +1,7 @@
+// keim2152
+// Kovacs Elek Akos
+// 532/2
+
 fun main() {
     StateMachine.loadStates("src/main/resources/form_I.A.4_2.txt")
     print(StateMachine.generateDotCode())
