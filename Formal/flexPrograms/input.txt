@@ -1,0 +1,12 @@
+123123.12301
+12321.2212.112
+"//" Helo Cigaaanyok
+
+/* /*
+12.0123.3311 22131 
+// Na mizuvan
+Aki buzi az //nem is marad
+meleg 12.210001
+*/
+
+function("buzi//vagy" : string, heloka) //Bad if you read this

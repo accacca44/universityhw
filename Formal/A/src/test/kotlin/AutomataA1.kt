@@ -1,11 +1,11 @@
 package test.kotlin
 
+import StateMachine
+import main.kotlin.NewStateMachine
 import java.io.File
 
 fun main(){
-    val outFile = File("src/test/out/out1.txt")
-    StateMachine.loadStates("src/main/resources/form_I.A.1.txt")
-    val txt = StateMachine.generateDotCode()
-    println(txt)
-    outFile.writeText(txt)
+    val inputFile = File("src/test/resources/form_I.A.3.txt")
+    val sm1 = NewStateMachine(inputFile)
+    sm1.generateDotCode()
 }
