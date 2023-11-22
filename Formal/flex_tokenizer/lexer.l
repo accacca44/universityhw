@@ -12,6 +12,9 @@ void printError();
 
 WHITESPACE          [ \t]
 NEWLINE             [\n]
+DIGIT               [0-9]
+INTEGER             [-+]?[1-9][0-9]*|0
+DOUBLE              [-+]?[0-9]+[.][0-9]*([eE][-+]?[0-9]+)?
 IDENTIFIER          [a-zA-Z_][a-zA-Z0-9_]*
 VAR_TYPE            (int|double)
 RELATION            (and|or|!=|==|<|>|<=|>=)
@@ -31,6 +34,8 @@ IO                  (get|log)
 {ARITHMETIC_OP}         { printToken("ARITHMETIC_OP"); }
 {IO}                    { printToken("IO"); }
 {ASSIGNMENT_OP}         { printToken("ASSIGNMENT_OP"); }
+{INTEGER}               { printToken("INTEGER"); }
+{DOUBLE}                { printToken("DOUBLE"); }
 {IDENTIFIER}            { printToken("IDENTIFIER"); }
 
 "{"               { printToken("OPEN_BRACE"); }
