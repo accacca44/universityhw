@@ -12,15 +12,18 @@ void printError();
 
 WHITESPACE          [ \t]
 NEWLINE             [\n]
+
 DIGIT               [0-9]
-INTEGER             [-+]?[1-9][0-9]*|0
-DOUBLE              [-+]?[0-9]+[.][0-9]*([eE][-+]?[0-9]+)?
+INTEGER             [1-9][0-9]*|0
+DOUBLE              [0-9]+[.][0-9]*([eE][-+]?[0-9]+)?
 IDENTIFIER          [a-zA-Z_][a-zA-Z0-9_]*
+
 VAR_TYPE            (int|double)
 RELATION            (and|or|!=|==|<|>|<=|>=)
-SCOPE               (till|test|instead)
-ARITHMETIC_OP       [-+*/%]
 ASSIGNMENT_OP       (=)
+ARITHMETIC_OP       [-+*/%]
+
+SCOPE               (till|test|instead)
 IO                  (get|log)
 
 %%
