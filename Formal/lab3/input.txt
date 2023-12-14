@@ -1,0 +1,31 @@
+# This is a comment
+
+int age = 10;
+double temp = -100.99;
+
+int i = 0;
+
+
+@@
+till (i <= 10 ) {
+    i = i + 1;
+    age = temp * age;
+
+    test (i == 5) {
+        age = (temp % 10) * 10 - age;
+    } instead while(;){
+        # This is an else branch
+        age = -100 - (temp * 24.1 - + 5);
+    }
+@
+}
+
+# End of while # lol this is the same comment;
+int number = 10; int numberSameRow = 20;
+
+test (number != numberSameRow) {
+    get(number);
+}
+
+# Print to console
+log(number);
