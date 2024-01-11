@@ -69,11 +69,15 @@
 /* First part of user prologue.  */
 #line 1 "akos.y"
 
+#include <algorithm> 
 #include <iostream>
 #include <string>
+#include <iterator>
 #include <unordered_map>
 
 using namespace std;
+
+#define max(a, b) ((a > b) ? a : b)
 
 extern int yylex();
 void yyerror(string);
@@ -85,21 +89,20 @@ typedef struct {
 
 extern ERROR_POS errorPos;
 
-enum VarType {
-  Integer,
-  Double,
-  Boolean,
-  Error = -1
-};
-
 // Symbol table for variables
 unordered_map<string, int> symbolTable;
 
 void declare(char*, int);
-void checkDeclared(char*);
+bool checkDeclared(char*);
+void checkType(char*, int);
+void checkAssignmentType(int, int);
+int getType(char*);
+void sameTypes(int, int);
+int commonType(int, int);
+void printTable();
 
 
-#line 103 "akos.tab.c"
+#line 106 "akos.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -163,21 +166,20 @@ enum yysymbol_kind_t
   YYSYMBOL_OPEN_PAREN = 33,                /* OPEN_PAREN  */
   YYSYMBOL_CLOSE_PAREN = 34,               /* CLOSE_PAREN  */
   YYSYMBOL_SEMICOLON = 35,                 /* SEMICOLON  */
-  YYSYMBOL_COMMA = 36,                     /* COMMA  */
-  YYSYMBOL_YYACCEPT = 37,                  /* $accept  */
-  YYSYMBOL_program = 38,                   /* program  */
-  YYSYMBOL_input = 39,                     /* input  */
-  YYSYMBOL_var_declaration = 40,           /* var_declaration  */
-  YYSYMBOL_var_assignment = 41,            /* var_assignment  */
-  YYSYMBOL_expression = 42,                /* expression  */
-  YYSYMBOL_logical_expression = 43,        /* logical_expression  */
-  YYSYMBOL_relational_expression = 44,     /* relational_expression  */
-  YYSYMBOL_relation = 45,                  /* relation  */
-  YYSYMBOL_value = 46,                     /* value  */
-  YYSYMBOL_if_statement = 47,              /* if_statement  */
-  YYSYMBOL_while_statement = 48,           /* while_statement  */
-  YYSYMBOL_read_value = 49,                /* read_value  */
-  YYSYMBOL_write_value = 50                /* write_value  */
+  YYSYMBOL_YYACCEPT = 36,                  /* $accept  */
+  YYSYMBOL_program = 37,                   /* program  */
+  YYSYMBOL_input = 38,                     /* input  */
+  YYSYMBOL_var_declaration = 39,           /* var_declaration  */
+  YYSYMBOL_var_assignment = 40,            /* var_assignment  */
+  YYSYMBOL_expression = 41,                /* expression  */
+  YYSYMBOL_logical_expression = 42,        /* logical_expression  */
+  YYSYMBOL_relational_expression = 43,     /* relational_expression  */
+  YYSYMBOL_relation = 44,                  /* relation  */
+  YYSYMBOL_value = 45,                     /* value  */
+  YYSYMBOL_if_statement = 46,              /* if_statement  */
+  YYSYMBOL_while_statement = 47,           /* while_statement  */
+  YYSYMBOL_read_value = 48,                /* read_value  */
+  YYSYMBOL_write_value = 49                /* write_value  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -508,7 +510,7 @@ union yyalloc
 #define YYLAST   235
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  37
+#define YYNTOKENS  36
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  14
 /* YYNRULES -- Number of rules.  */
@@ -517,7 +519,7 @@ union yyalloc
 #define YYNSTATES  114
 
 /* YYMAXUTOK -- Last valid token kind.  */
-#define YYMAXUTOK   291
+#define YYMAXUTOK   290
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -560,19 +562,19 @@ static const yytype_int8 yytranslate[] =
        5,     6,     7,     8,     9,    10,    11,    12,    13,    14,
       15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
       25,    26,    27,    28,    29,    30,    31,    32,    33,    34,
-      35,    36
+      35
 };
 
 #if YYDEBUG
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    67,    67,    68,    72,    73,    74,    75,    76,    77,
-      78,    79,    83,    84,    85,    86,    87,    88,    93,    97,
-      98,    99,   100,   101,   102,   103,   104,   105,   109,   110,
-     111,   112,   113,   117,   121,   122,   123,   124,   125,   126,
-     129,   130,   131,   132,   133,   137,   138,   139,   140,   144,
-     148,   152
+       0,    73,    73,    74,    78,    79,    80,    81,    82,    83,
+      84,    85,    89,    90,    91,    92,    93,    94,    98,   102,
+     103,   104,   105,   106,   107,   108,   109,   110,   115,   116,
+     117,   118,   119,   123,   127,   128,   129,   130,   131,   132,
+     135,   136,   137,   138,   139,   143,   144,   145,   146,   150,
+     154,   158
 };
 #endif
 
@@ -594,10 +596,10 @@ static const char *const yytname[] =
   "REL_NOTEQ", "REL_EQ", "REL_LT", "REL_GT", "REL_LTE", "REL_GTE",
   "KEY_WHILE", "KEY_IF", "KEY_ELSE", "OP_SUB", "OP_ADD", "OP_MUL",
   "OP_DIV", "OP_MOD", "IO_READ", "IO_WRITE", "OPEN_BRACE", "CLOSE_BRACE",
-  "OPEN_PAREN", "CLOSE_PAREN", "SEMICOLON", "COMMA", "$accept", "program",
-  "input", "var_declaration", "var_assignment", "expression",
-  "logical_expression", "relational_expression", "relation", "value",
-  "if_statement", "while_statement", "read_value", "write_value", YY_NULLPTR
+  "OPEN_PAREN", "CLOSE_PAREN", "SEMICOLON", "$accept", "program", "input",
+  "var_declaration", "var_assignment", "expression", "logical_expression",
+  "relational_expression", "relation", "value", "if_statement",
+  "while_statement", "read_value", "write_value", YY_NULLPTR
 };
 
 static const char *
@@ -731,29 +733,29 @@ static const yytype_int8 yycheck[] =
    state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,    38,     0,     1,     3,     8,     9,    10,    21,    22,
-      29,    30,    35,    39,    40,    41,    47,    48,    49,    50,
+       0,    37,     0,     1,     3,     8,     9,    10,    21,    22,
+      29,    30,    35,    38,    39,    40,    46,    47,    48,    49,
       35,    11,     3,     3,     3,    33,    33,    33,    33,     3,
-       4,     5,     6,     7,    24,    25,    33,    42,    46,    11,
-      35,    11,    35,    11,    35,    14,    42,    43,    44,     1,
-      43,     3,    42,    42,    42,    42,    24,    25,    26,    27,
-      28,    35,    42,    42,    42,    33,    15,    16,    17,    18,
-      19,    20,    45,    34,    12,    13,    34,    34,    34,    34,
-      34,    42,    42,    42,    42,    42,    35,    35,    35,    43,
-      42,    31,    42,    44,    44,    31,    31,    35,    35,    34,
-      38,    38,    38,    32,    32,    32,    23,    23,    31,    31,
-      38,    38,    32,    32
+       4,     5,     6,     7,    24,    25,    33,    41,    45,    11,
+      35,    11,    35,    11,    35,    14,    41,    42,    43,     1,
+      42,     3,    41,    41,    41,    41,    24,    25,    26,    27,
+      28,    35,    41,    41,    41,    33,    15,    16,    17,    18,
+      19,    20,    44,    34,    12,    13,    34,    34,    34,    34,
+      34,    41,    41,    41,    41,    41,    35,    35,    35,    42,
+      41,    31,    41,    43,    43,    31,    31,    35,    35,    34,
+      37,    37,    37,    32,    32,    32,    23,    23,    31,    31,
+      37,    37,    32,    32
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    37,    38,    38,    39,    39,    39,    39,    39,    39,
-      39,    39,    40,    40,    40,    40,    40,    40,    41,    42,
-      42,    42,    42,    42,    42,    42,    42,    42,    43,    43,
-      43,    43,    43,    44,    45,    45,    45,    45,    45,    45,
-      46,    46,    46,    46,    46,    47,    47,    47,    47,    48,
-      49,    50
+       0,    36,    37,    37,    38,    38,    38,    38,    38,    38,
+      38,    38,    39,    39,    39,    39,    39,    39,    40,    41,
+      41,    41,    41,    41,    41,    41,    41,    41,    42,    42,
+      42,    42,    42,    43,    44,    44,    44,    44,    44,    44,
+      45,    45,    45,    45,    45,    46,    46,    46,    46,    47,
+      48,    49
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
@@ -1498,73 +1500,193 @@ yyreduce:
   switch (yyn)
     {
   case 12: /* var_declaration: TYPE_INT IDENTIFIER SEMICOLON  */
-#line 83 "akos.y"
-                                    { declare((yyvsp[-1].variable_name), 0); }
-#line 1504 "akos.tab.c"
+#line 89 "akos.y"
+                                    { declare((yyvsp[-1].variable_name), 1); }
+#line 1506 "akos.tab.c"
     break;
 
   case 13: /* var_declaration: TYPE_DOUBLE IDENTIFIER SEMICOLON  */
-#line 84 "akos.y"
-                                       { declare((yyvsp[-1].variable_name), 1); }
-#line 1510 "akos.tab.c"
+#line 90 "akos.y"
+                                       { declare((yyvsp[-1].variable_name), 2); }
+#line 1512 "akos.tab.c"
     break;
 
   case 14: /* var_declaration: TYPE_BOOL IDENTIFIER SEMICOLON  */
-#line 85 "akos.y"
-                                     { declare((yyvsp[-1].variable_name), 2); }
-#line 1516 "akos.tab.c"
+#line 91 "akos.y"
+                                     { declare((yyvsp[-1].variable_name), 0); }
+#line 1518 "akos.tab.c"
     break;
 
   case 15: /* var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 86 "akos.y"
-                                                             { declare((yyvsp[-3].variable_name), 0); }
-#line 1522 "akos.tab.c"
+#line 92 "akos.y"
+                                                             { declare((yyvsp[-3].variable_name), 1); checkAssignmentType(1, (yyvsp[-1].type)); }
+#line 1524 "akos.tab.c"
     break;
 
   case 16: /* var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 87 "akos.y"
-                                                                { declare((yyvsp[-3].variable_name), 1); }
-#line 1528 "akos.tab.c"
+#line 93 "akos.y"
+                                                                { declare((yyvsp[-3].variable_name), 2); checkAssignmentType(2, (yyvsp[-1].type));}
+#line 1530 "akos.tab.c"
     break;
 
   case 17: /* var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 88 "akos.y"
-                                                              { declare((yyvsp[-3].variable_name), 2); }
-#line 1534 "akos.tab.c"
+#line 94 "akos.y"
+                                                              { declare((yyvsp[-3].variable_name), 0); checkAssignmentType(0, (yyvsp[-1].type));}
+#line 1536 "akos.tab.c"
     break;
 
   case 18: /* var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 93 "akos.y"
-                                                  { checkDeclared((yyvsp[-3].variable_name)); }
-#line 1540 "akos.tab.c"
+#line 98 "akos.y"
+                                                  { if(checkDeclared((yyvsp[-3].variable_name)) == true) { checkAssignmentType(getType((yyvsp[-3].variable_name)), (yyvsp[-1].type));} }
+#line 1542 "akos.tab.c"
+    break;
+
+  case 19: /* expression: value  */
+#line 102 "akos.y"
+            { (yyval.type) = (yyvsp[0].type); }
+#line 1548 "akos.tab.c"
+    break;
+
+  case 20: /* expression: OP_ADD expression  */
+#line 103 "akos.y"
+                        { (yyval.type) = (yyvsp[0].type); }
+#line 1554 "akos.tab.c"
+    break;
+
+  case 21: /* expression: OP_SUB expression  */
+#line 104 "akos.y"
+                        { (yyval.type) = (yyvsp[0].type); }
+#line 1560 "akos.tab.c"
+    break;
+
+  case 22: /* expression: expression OP_ADD expression  */
+#line 105 "akos.y"
+                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1566 "akos.tab.c"
+    break;
+
+  case 23: /* expression: expression OP_SUB expression  */
+#line 106 "akos.y"
+                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1572 "akos.tab.c"
+    break;
+
+  case 24: /* expression: expression OP_MUL expression  */
+#line 107 "akos.y"
+                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1578 "akos.tab.c"
+    break;
+
+  case 25: /* expression: expression OP_DIV expression  */
+#line 108 "akos.y"
+                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1584 "akos.tab.c"
+    break;
+
+  case 26: /* expression: expression OP_MOD expression  */
+#line 109 "akos.y"
+                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1590 "akos.tab.c"
+    break;
+
+  case 27: /* expression: OPEN_PAREN expression CLOSE_PAREN  */
+#line 110 "akos.y"
+                                        { (yyval.type) = (yyvsp[-1].type); }
+#line 1596 "akos.tab.c"
+    break;
+
+  case 28: /* logical_expression: expression  */
+#line 115 "akos.y"
+                 { (yyval.type) = (yyvsp[0].type); }
+#line 1602 "akos.tab.c"
+    break;
+
+  case 29: /* logical_expression: relational_expression  */
+#line 116 "akos.y"
+                            { (yyval.type) = (yyvsp[0].type); }
+#line 1608 "akos.tab.c"
+    break;
+
+  case 30: /* logical_expression: relational_expression REL_AND relational_expression  */
+#line 117 "akos.y"
+                                                          { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1614 "akos.tab.c"
+    break;
+
+  case 31: /* logical_expression: relational_expression REL_OR relational_expression  */
+#line 118 "akos.y"
+                                                         { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
+#line 1620 "akos.tab.c"
+    break;
+
+  case 32: /* logical_expression: REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN  */
+#line 119 "akos.y"
+                                                        { (yyval.type) = (yyvsp[-1].type); }
+#line 1626 "akos.tab.c"
+    break;
+
+  case 33: /* relational_expression: expression relation expression  */
+#line 123 "akos.y"
+                                   { (yyval.type) = 0; }
+#line 1632 "akos.tab.c"
+    break;
+
+  case 40: /* value: INTEGER  */
+#line 135 "akos.y"
+              { (yyval.type) = 1; }
+#line 1638 "akos.tab.c"
     break;
 
   case 41: /* value: TRUE  */
-#line 130 "akos.y"
-           { yylval.integer_value = 1; }
-#line 1546 "akos.tab.c"
+#line 136 "akos.y"
+           { (yyval.type) = 0; }
+#line 1644 "akos.tab.c"
     break;
 
   case 42: /* value: FALSE  */
-#line 131 "akos.y"
-            { yylval.integer_value = 0; }
-#line 1552 "akos.tab.c"
+#line 137 "akos.y"
+            { (yyval.type) = 0; }
+#line 1650 "akos.tab.c"
+    break;
+
+  case 43: /* value: DOUBLE  */
+#line 138 "akos.y"
+             { (yyval.type) = 2; }
+#line 1656 "akos.tab.c"
     break;
 
   case 44: /* value: IDENTIFIER  */
-#line 133 "akos.y"
-                 { checkDeclared((yyvsp[0].variable_name)); }
-#line 1558 "akos.tab.c"
+#line 139 "akos.y"
+                 { checkDeclared((yyvsp[0].variable_name)); (yyval.type) = getType((yyvsp[0].variable_name)); }
+#line 1662 "akos.tab.c"
+    break;
+
+  case 45: /* if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE  */
+#line 143 "akos.y"
+                                                                                      { checkAssignmentType(0, (yyvsp[-4].type)); }
+#line 1668 "akos.tab.c"
+    break;
+
+  case 46: /* if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE  */
+#line 144 "akos.y"
+                                                                                                                              { checkAssignmentType(0, (yyvsp[-8].type)); }
+#line 1674 "akos.tab.c"
+    break;
+
+  case 49: /* while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE  */
+#line 150 "akos.y"
+                                                                                     { checkAssignmentType(0, (yyvsp[-4].type)); }
+#line 1680 "akos.tab.c"
     break;
 
   case 50: /* read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON  */
-#line 148 "akos.y"
-                                                      { checkDeclared((yyvsp[-2].variable_name));}
-#line 1564 "akos.tab.c"
+#line 154 "akos.y"
+                                                      { checkDeclared((yyvsp[-2].variable_name)); }
+#line 1686 "akos.tab.c"
     break;
 
 
-#line 1568 "akos.tab.c"
+#line 1690 "akos.tab.c"
 
       default: break;
     }
@@ -1788,7 +1910,7 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 155 "akos.y"
+#line 161 "akos.y"
 
 
 int main() {
@@ -1803,17 +1925,67 @@ void yyerror(string s) {
 }
 
 void declare(char* var, int type) {
-  cout << var << endl;
-
   if (symbolTable.find(var) == symbolTable.end()) {
     symbolTable[var] = type;
   } else {
     cout << "Redeclaration for " << var << " in line: " << errorPos.row << ", at charachter: " << errorPos.col << "\n";
   }
+  printTable();
 }
 
-void checkDeclared(char* var) {
+bool checkDeclared(char* var) {
   if (symbolTable.find(var) == symbolTable.end()) {
     cout << "Undeclared variable " << var << " in line: " << errorPos.row << ", at charachter: " << errorPos.col << "\n";
+    return false;
+  }
+  printTable();
+  return true;
+}
+
+int getType(char* var) {
+  auto it = symbolTable.find(var);
+  if (it != symbolTable.end()) {
+    return it->second;
+  } else {
+    return -1;
   }
 }
+
+void checkType(char* var, int expectedType) {
+  int actualType = getType(var);
+
+  if (actualType == -1) {
+    cout << "Variable " << var << " used before declaration in line: " << errorPos.row << ", at charachter: " << errorPos.col << "\n";
+    return;  
+  }
+
+  if (actualType != expectedType) {
+    cout << "Type mismatch for variable " << var << " in line: " << errorPos.row << ", at charachter: " << errorPos.col << "\n";
+  }
+}
+
+int commonType(int a, int b) {
+  if(a == -1 || b == -1) return a;
+  else if(a == b) return a;
+  else return max(a,b);
+}
+
+
+void checkAssignmentType(int a, int b) {
+  cout << " Types: " << a << " " << b << endl;
+  if (a < b) {
+    cout << "Warning, data loss in conversion in line: " << errorPos.row << ", at charachter: " << errorPos.col << "\n";
+  }
+}
+
+void printTable() { 
+  cout << "==START==" << endl;
+   std::for_each(symbolTable.begin(), symbolTable.end(), 
+                  [](std::pair<std::string, int> p) { 
+                      std::cout << p.first 
+                                << " :: " << p.second 
+                                << std::endl; 
+                  }); 
+  cout << "==END==" << endl;
+}
+

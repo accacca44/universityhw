@@ -86,8 +86,7 @@ extern int yydebug;
     CLOSE_BRACE = 287,             /* CLOSE_BRACE  */
     OPEN_PAREN = 288,              /* OPEN_PAREN  */
     CLOSE_PAREN = 289,             /* CLOSE_PAREN  */
-    SEMICOLON = 290,               /* SEMICOLON  */
-    COMMA = 291                    /* COMMA  */
+    SEMICOLON = 290                /* SEMICOLON  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -96,8 +95,9 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 35 "akos.y"
+#line 38 "akos.y"
 
+  int         type;
   int         integer_value;
   double      double_value;
   char*       variable_name;
