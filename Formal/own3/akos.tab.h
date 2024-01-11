@@ -95,7 +95,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 38 "akos.y"
+#line 44 "akos.y"
 
   int         type;
   int         integer_value;

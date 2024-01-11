@@ -65,8 +65,8 @@ ASSIGNMENT_OP       (=)
 {ASSIGNMENT_OP}         { printToken("ASSIGNMENT_OP"); return ASSIGNMENT_OP;}
 {INTEGER}               { printToken("INTEGER"); yylval.integer_value = atoi(yytext); return INTEGER;}
 {DOUBLE}                { printToken("DOUBLE"); yylval.double_value = atof(yytext); return DOUBLE;}
-"true"                  { printToken("TRUE"); return TRUE; }
-"false"                 { printToken("FALSE"); return FALSE; } 
+"true"                  { printToken("TRUE"); yylval.integer_value = 1; return TRUE; }
+"false"                 { printToken("FALSE"); yylval.integer_value = 0; return FALSE; } 
 {IDENTIFIER}            { printToken("IDENTIFIER"); yylval.variable_name = strdup(yytext); return IDENTIFIER;}
 
 "{"               { printToken("OPEN_BRACE"); return OPEN_BRACE;}

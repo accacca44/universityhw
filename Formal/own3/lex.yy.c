@@ -965,12 +965,12 @@ YY_RULE_SETUP
 case 28:
 YY_RULE_SETUP
 #line 68 "lexer.l"
-{ printToken("TRUE"); return TRUE; }
+{ printToken("TRUE"); yylval.integer_value = 1; return TRUE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
 #line 69 "lexer.l"
-{ printToken("FALSE"); return FALSE; } 
+{ printToken("FALSE"); yylval.integer_value = 0; return FALSE; } 
 	YY_BREAK
 case 30:
 YY_RULE_SETUP

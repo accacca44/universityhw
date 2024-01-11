@@ -1,14 +1,24 @@
-int a; double b = 4.3; bool c = true;
+int a; 
+double b = 4.3; 
+bool c = true;
 int a = 2;
 g = 4;
 
-test(3 and g) {;}
+test(3 <= g) {
+    a = 10;
+}
+
 log(tupac);
 get(heyvar);
 
 a = 4.12;
 double d = 123;
 
-int d = 12.4 + a;
+int d = (12.4 + a) * 5;
 a = false;
 a = 4;
+
+till(a > 0) {
+    a = a-1;
+    log(a);
+}

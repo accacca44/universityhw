@@ -1,0 +1,12 @@
+int a; int b;
+int temp;
+get(a);
+get(b);
+
+till(b != 0) {
+    temp = b;
+    b = a % b;
+    a = temp;
+}
+
+log(a);

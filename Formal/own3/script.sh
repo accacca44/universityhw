@@ -1,4 +1,4 @@
 flex lexer.l
-bison -dtv akos.y
+bison -dtv  akos.y 
 g++ lex.yy.c akos.tab.c
-./a.out < input.txt
+./a.out < examples/lnko.akos

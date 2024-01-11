@@ -1,0 +1,18 @@
+int number;
+bool isPrime = true;
+
+get(number);
+
+test(number <= 1) {
+    isPrime = false;
+}
+
+int i = 2;
+till (i < number) {
+    test(number%i == 0) {
+        isPrime = false;
+    }
+    i = i+1;
+}
+
+log(isPrime);

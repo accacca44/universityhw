@@ -72,6 +72,7 @@
 #include <algorithm> 
 #include <iostream>
 #include <string>
+#include <fstream>
 #include <iterator>
 #include <unordered_map>
 
@@ -80,7 +81,6 @@ using namespace std;
 #define max(a, b) ((a > b) ? a : b)
 
 extern int yylex();
-void yyerror(string);
 
 typedef struct {
   int row;
@@ -92,6 +92,11 @@ extern ERROR_POS errorPos;
 // Symbol table for variables
 unordered_map<string, int> symbolTable;
 
+ofstream out;
+const int TAB_SIZE = 4;
+int depth = 0;
+
+void yyerror(string);
 void declare(char*, int);
 bool checkDeclared(char*);
 void checkType(char*, int);
@@ -100,9 +105,10 @@ int getType(char*);
 void sameTypes(int, int);
 int commonType(int, int);
 void printTable();
+string indent();
 
 
-#line 106 "akos.tab.c"
+#line 112 "akos.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -170,16 +176,39 @@ enum yysymbol_kind_t
   YYSYMBOL_program = 37,                   /* program  */
   YYSYMBOL_input = 38,                     /* input  */
   YYSYMBOL_var_declaration = 39,           /* var_declaration  */
-  YYSYMBOL_var_assignment = 40,            /* var_assignment  */
-  YYSYMBOL_expression = 41,                /* expression  */
-  YYSYMBOL_logical_expression = 42,        /* logical_expression  */
-  YYSYMBOL_relational_expression = 43,     /* relational_expression  */
-  YYSYMBOL_relation = 44,                  /* relation  */
-  YYSYMBOL_value = 45,                     /* value  */
-  YYSYMBOL_if_statement = 46,              /* if_statement  */
-  YYSYMBOL_while_statement = 47,           /* while_statement  */
-  YYSYMBOL_read_value = 48,                /* read_value  */
-  YYSYMBOL_write_value = 49                /* write_value  */
+  YYSYMBOL_40_1 = 40,                      /* $@1  */
+  YYSYMBOL_41_2 = 41,                      /* $@2  */
+  YYSYMBOL_42_3 = 42,                      /* $@3  */
+  YYSYMBOL_var_assignment = 43,            /* var_assignment  */
+  YYSYMBOL_44_4 = 44,                      /* $@4  */
+  YYSYMBOL_expression = 45,                /* expression  */
+  YYSYMBOL_46_5 = 46,                      /* $@5  */
+  YYSYMBOL_47_6 = 47,                      /* $@6  */
+  YYSYMBOL_48_7 = 48,                      /* $@7  */
+  YYSYMBOL_49_8 = 49,                      /* $@8  */
+  YYSYMBOL_50_9 = 50,                      /* $@9  */
+  YYSYMBOL_51_10 = 51,                     /* $@10  */
+  YYSYMBOL_52_11 = 52,                     /* $@11  */
+  YYSYMBOL_53_12 = 53,                     /* $@12  */
+  YYSYMBOL_logical_expression = 54,        /* logical_expression  */
+  YYSYMBOL_55_13 = 55,                     /* $@13  */
+  YYSYMBOL_56_14 = 56,                     /* $@14  */
+  YYSYMBOL_57_15 = 57,                     /* $@15  */
+  YYSYMBOL_relational_expression = 58,     /* relational_expression  */
+  YYSYMBOL_relation = 59,                  /* relation  */
+  YYSYMBOL_value = 60,                     /* value  */
+  YYSYMBOL_if_statement = 61,              /* if_statement  */
+  YYSYMBOL_62_16 = 62,                     /* $@16  */
+  YYSYMBOL_63_17 = 63,                     /* $@17  */
+  YYSYMBOL_64_18 = 64,                     /* $@18  */
+  YYSYMBOL_65_19 = 65,                     /* $@19  */
+  YYSYMBOL_66_20 = 66,                     /* $@20  */
+  YYSYMBOL_while_statement = 67,           /* while_statement  */
+  YYSYMBOL_68_21 = 68,                     /* $@21  */
+  YYSYMBOL_69_22 = 69,                     /* $@22  */
+  YYSYMBOL_read_value = 70,                /* read_value  */
+  YYSYMBOL_write_value = 71,               /* write_value  */
+  YYSYMBOL_72_23 = 72                      /* $@23  */
 };
 typedef enum yysymbol_kind_t yysymbol_kind_t;
 
@@ -296,7 +325,7 @@ typedef int yytype_uint16;
 
 
 /* Stored state numbers (used for stacks). */
-typedef yytype_int8 yy_state_t;
+typedef yytype_uint8 yy_state_t;
 
 /* State numbers in computations.  */
 typedef int yy_state_fast_t;
@@ -507,16 +536,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  2
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   235
+#define YYLAST   285
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  36
 /* YYNNTS -- Number of nonterminals.  */
-#define YYNNTS  14
+#define YYNNTS  37
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  51
+#define YYNRULES  74
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  114
+#define YYNSTATES  142
 
 /* YYMAXUTOK -- Last valid token kind.  */
 #define YYMAXUTOK   290
@@ -569,12 +598,14 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    73,    73,    74,    78,    79,    80,    81,    82,    83,
-      84,    85,    89,    90,    91,    92,    93,    94,    98,   102,
-     103,   104,   105,   106,   107,   108,   109,   110,   115,   116,
-     117,   118,   119,   123,   127,   128,   129,   130,   131,   132,
-     135,   136,   137,   138,   139,   143,   144,   145,   146,   150,
-     154,   158
+       0,    79,    79,    80,    84,    85,    86,    87,    88,    89,
+      90,    91,    95,    96,    97,    98,    98,    99,    99,   100,
+     100,   104,   104,   108,   109,   109,   110,   110,   111,   111,
+     112,   112,   113,   113,   114,   114,   115,   115,   116,   116,
+     121,   122,   123,   123,   124,   124,   125,   125,   129,   133,
+     134,   135,   136,   137,   138,   141,   142,   143,   144,   145,
+     149,   149,   149,   150,   150,   150,   150,   151,   152,   156,
+     156,   156,   160,   164,   164
 };
 #endif
 
@@ -597,9 +628,12 @@ static const char *const yytname[] =
   "KEY_WHILE", "KEY_IF", "KEY_ELSE", "OP_SUB", "OP_ADD", "OP_MUL",
   "OP_DIV", "OP_MOD", "IO_READ", "IO_WRITE", "OPEN_BRACE", "CLOSE_BRACE",
   "OPEN_PAREN", "CLOSE_PAREN", "SEMICOLON", "$accept", "program", "input",
-  "var_declaration", "var_assignment", "expression", "logical_expression",
-  "relational_expression", "relation", "value", "if_statement",
-  "while_statement", "read_value", "write_value", YY_NULLPTR
+  "var_declaration", "$@1", "$@2", "$@3", "var_assignment", "$@4",
+  "expression", "$@5", "$@6", "$@7", "$@8", "$@9", "$@10", "$@11", "$@12",
+  "logical_expression", "$@13", "$@14", "$@15", "relational_expression",
+  "relation", "value", "if_statement", "$@16", "$@17", "$@18", "$@19",
+  "$@20", "while_statement", "$@21", "$@22", "read_value", "write_value",
+  "$@23", YY_NULLPTR
 };
 
 static const char *
@@ -609,12 +643,12 @@ yysymbol_name (yysymbol_kind_t yysymbol)
 }
 #endif
 
-#define YYPACT_NINF (-80)
+#define YYPACT_NINF (-87)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-1)
+#define YYTABLE_NINF (-61)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -623,18 +657,21 @@ yysymbol_name (yysymbol_kind_t yysymbol)
    STATE-NUM.  */
 static const yytype_int16 yypact[] =
 {
-     -80,    47,   -80,   -27,     8,    18,    23,    28,     1,    26,
-      31,    50,   -80,   -80,   -80,   -80,   -80,   -80,   -80,   -80,
-     -80,    -1,    -2,    14,    35,    38,   165,    58,    -1,   -80,
-     -80,   -80,   -80,   -80,    -1,    -1,    -1,   167,   -80,    -1,
-     -80,    -1,   -80,    -1,   -80,    51,   158,    59,    15,    60,
-      70,    72,   131,   -16,   -16,   201,    -1,    -1,    -1,    -1,
-      -1,   -80,   179,   184,   196,    38,   -80,   -80,   -80,   -80,
-     -80,   -80,    -1,    54,    -1,    -1,    76,    82,    56,    79,
-     -80,   -16,   -16,   -80,   -80,    48,   -80,   -80,   -80,    81,
-      74,   -80,   158,   -80,   -80,   -80,   -80,   -80,   -80,   -80,
-      57,    87,   102,   -80,    98,   105,    99,   112,   -80,   -80,
-     117,   132,   -80,   -80
+     -87,    72,   -87,   -26,     0,    12,    19,    28,    16,    22,
+      26,    27,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
+     -87,   -87,    -3,    -1,     5,   -87,   205,    58,   -87,    23,
+     -87,   -87,   -87,   -87,   -87,   -87,   210,    29,   210,   210,
+      30,    23,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
+      17,   -87,    23,    23,    23,    32,   229,    40,     1,    31,
+      42,    45,    49,   171,    23,    23,    23,   -87,   -87,   -87,
+     -87,   -87,   -87,    71,   234,   239,   -87,   -87,   -87,   -87,
+     -87,   -87,   -87,    23,    55,   -87,   -87,   -87,    56,    57,
+     -87,    54,    24,    24,   251,    23,    23,    23,    23,    23,
+     -87,   -87,   -87,   210,    -7,   -87,    23,    23,    82,   -87,
+     -87,   -87,   -87,    24,    24,   -87,   -87,   -22,    66,   -87,
+     229,   -87,   -87,    85,   -87,   -87,   -87,   112,    74,   127,
+     142,   -87,   -87,   -87,    86,   157,    79,   -87,   -87,   -87,
+     172,   -87
 };
 
 /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -644,89 +681,106 @@ static const yytype_int8 yydefact[] =
 {
        2,     0,     1,     0,     0,     0,     0,     0,     0,     0,
        0,     0,     4,     3,     5,     6,     7,     8,     9,    10,
-      11,     0,     0,     0,     0,     0,     0,     0,     0,    44,
-      40,    43,    41,    42,     0,     0,     0,     0,    19,     0,
-      12,     0,    13,     0,    14,     0,    28,     0,    29,     0,
-       0,     0,     0,    21,    20,     0,     0,     0,     0,     0,
-       0,    18,     0,     0,     0,     0,    35,    34,    37,    36,
-      39,    38,     0,     0,     0,     0,     0,     0,     0,     0,
-      27,    23,    22,    24,    25,    26,    15,    16,    17,     0,
-      33,     2,     0,    30,    31,     2,     2,    50,    51,    32,
-       0,     0,     0,    49,    47,    45,     0,     0,     2,     2,
-       0,     0,    48,    46
+      11,    21,     0,     0,     0,    69,     0,     0,    73,     0,
+      15,    12,    17,    13,    19,    14,     0,     0,     0,     0,
+       0,     0,    59,    55,    58,    56,    57,    26,    24,    38,
+       0,    23,     0,     0,     0,     0,    40,     0,    41,     0,
+       0,     0,     0,     0,     0,     0,     0,    30,    28,    32,
+      34,    36,    22,     0,     0,     0,    46,    50,    49,    52,
+      51,    54,    53,     0,     0,    42,    44,     2,     0,     0,
+      72,     0,    27,    25,     0,     0,     0,     0,     0,     0,
+      16,    18,    20,     0,    48,    70,     0,     0,     0,    61,
+      64,    74,    39,    31,    29,    33,    35,    37,     0,     2,
+       0,    43,    45,    67,     2,     2,    47,     0,     0,     0,
+       0,    71,     2,    62,     0,     0,     0,    68,    65,     2,
+       0,    66
 };
 
 /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-     -80,   -79,   -80,   -80,   -80,   -21,   -25,     6,   -80,   -80,
-     -80,   -80,   -80,   -80
+     -87,   -86,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -29,
+     -87,   -87,   -87,   -87,   -87,   -87,   -87,   -87,   -32,   -87,
+     -87,   -87,   -49,   -87,   -87,   -87,   -87,   -87,   -87,   -87,
+     -87,   -87,   -87,   -87,   -87,   -87,   -87
 };
 
 /* YYDEFGOTO[NTERM-NUM].  */
-static const yytype_int8 yydefgoto[] =
+static const yytype_uint8 yydefgoto[] =
 {
-       0,     1,    13,    14,    15,    46,    47,    48,    72,    38,
-      16,    17,    18,    19
+       0,     1,    13,    14,    52,    53,    54,    15,    29,    56,
+      65,    64,    96,    95,    97,    98,    99,    66,    57,   106,
+     107,   103,    58,    83,    51,    16,    38,   124,    39,   125,
+     139,    17,    36,   119,    18,    19,    41
 };
 
 /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
    positive, shift that token.  If negative, reduce the rule whose
    number is the opposite.  If YYTABLE_NINF, syntax error.  */
-static const yytype_int8 yytable[] =
+static const yytype_int16 yytable[] =
 {
-      37,    50,    29,    30,    31,    32,    33,    52,    20,    39,
-      58,    59,   100,    53,    54,    55,   101,   102,    62,    21,
-      63,    22,    64,    34,    35,    41,    23,    74,    75,   110,
-     111,    24,    36,    40,    25,    81,    82,    83,    84,    85,
-      89,    29,    30,    31,    32,    33,    43,     2,     3,    42,
-       4,    90,    45,    92,    92,     5,     6,     7,     3,    26,
-       4,    51,    34,    35,    27,     5,     6,     7,     8,     9,
-      44,    36,    56,    57,    58,    59,    10,    11,     8,     9,
-      93,    94,    12,    28,    65,    91,    10,    11,     3,   103,
-       4,    97,    12,    73,    76,     5,     6,     7,    56,    57,
-      58,    59,    60,     3,    77,     4,    78,    95,     8,     9,
-       5,     6,     7,    96,    98,    99,    10,    11,     3,   104,
-       4,   106,    12,     8,     9,     5,     6,     7,   107,     0,
-     108,    10,    11,     3,   105,     4,     0,    12,     8,     9,
-       5,     6,     7,   109,     0,     0,    10,    11,     0,   112,
-       0,     0,    12,     8,     9,    56,    57,    58,    59,    60,
-       0,    10,    11,     0,   113,    79,    49,    12,    29,    30,
-      31,    32,    33,    66,    67,    68,    69,    70,    71,    45,
-       0,     0,    56,    57,    58,    59,    60,     0,     0,    34,
-      35,    56,    57,    58,    59,    60,     0,     0,    36,     0,
-       0,     0,    61,    56,    57,    58,    59,    60,    56,    57,
-      58,    59,    60,     0,    86,     0,     0,     0,     0,    87,
-      56,    57,    58,    59,    60,    56,    57,    58,    59,    60,
-       0,    88,     0,     0,     0,    80
+      50,   108,    67,    68,    69,    70,    60,    61,    30,    20,
+      32,    21,    63,    85,    86,    22,    34,    67,    68,    69,
+      70,    71,    23,    73,    74,    75,    42,    43,    44,    45,
+      46,    24,    31,   127,    33,    92,    93,    94,   129,   130,
+      35,    67,    68,    69,    70,    71,   135,    47,    48,    25,
+      69,    70,    72,   140,   104,    26,    49,   121,   122,    27,
+      28,    40,    87,    59,    62,    76,   113,   114,   115,   116,
+     117,   118,     2,     3,    84,     4,    88,   120,   120,    89,
+       5,     6,     7,     3,    90,     4,   105,   109,   110,   111,
+       5,     6,     7,     8,     9,    67,    68,    69,    70,    71,
+     126,    10,    11,     8,     9,   132,   100,    12,   128,   136,
+     138,    10,    11,     3,   123,     4,     0,    12,     0,     0,
+       5,     6,     7,     0,     0,     0,     0,     0,     3,     0,
+       4,     0,     0,     8,     9,     5,     6,     7,     0,     0,
+       0,    10,    11,     3,   131,     4,     0,    12,     8,     9,
+       5,     6,     7,     0,     0,     0,    10,    11,     3,   133,
+       4,     0,    12,     8,     9,     5,     6,     7,     0,     0,
+       0,    10,    11,     3,   134,     4,     0,    12,     8,     9,
+       5,     6,     7,     0,     0,     0,    10,    11,     0,   137,
+       0,     0,    12,     8,     9,    67,    68,    69,    70,    71,
+       0,    10,    11,     0,   141,    91,    37,    12,   -60,   -60,
+     -60,   -60,   -60,    42,    43,    44,    45,    46,     0,   -60,
+       0,     0,     0,     0,    55,     0,     0,     0,     0,   -60,
+     -60,     0,     0,     0,    47,    48,     0,     0,   -60,     0,
+       0,     0,     0,    49,    77,    78,    79,    80,    81,    82,
+       0,     0,     0,    67,    68,    69,    70,    71,    67,    68,
+      69,    70,    71,    67,    68,    69,    70,    71,     0,   101,
+       0,     0,     0,     0,   102,    67,    68,    69,    70,    71,
+       0,     0,     0,     0,     0,   112
 };
 
-static const yytype_int8 yycheck[] =
+static const yytype_int16 yycheck[] =
 {
-      21,    26,     3,     4,     5,     6,     7,    28,    35,    11,
-      26,    27,    91,    34,    35,    36,    95,    96,    39,    11,
-      41,     3,    43,    24,    25,    11,     3,    12,    13,   108,
-     109,     3,    33,    35,    33,    56,    57,    58,    59,    60,
-      65,     3,     4,     5,     6,     7,    11,     0,     1,    35,
-       3,    72,    14,    74,    75,     8,     9,    10,     1,    33,
-       3,     3,    24,    25,    33,     8,     9,    10,    21,    22,
-      35,    33,    24,    25,    26,    27,    29,    30,    21,    22,
-      74,    75,    35,    33,    33,    31,    29,    30,     1,    32,
-       3,    35,    35,    34,    34,     8,     9,    10,    24,    25,
-      26,    27,    28,     1,    34,     3,    34,    31,    21,    22,
-       8,     9,    10,    31,    35,    34,    29,    30,     1,    32,
-       3,    23,    35,    21,    22,     8,     9,    10,    23,    -1,
-      31,    29,    30,     1,    32,     3,    -1,    35,    21,    22,
-       8,     9,    10,    31,    -1,    -1,    29,    30,    -1,    32,
+      29,    87,    24,    25,    26,    27,    38,    39,    11,    35,
+      11,    11,    41,    12,    13,     3,    11,    24,    25,    26,
+      27,    28,     3,    52,    53,    54,     3,     4,     5,     6,
+       7,     3,    35,   119,    35,    64,    65,    66,   124,   125,
+      35,    24,    25,    26,    27,    28,   132,    24,    25,    33,
+      26,    27,    35,   139,    83,    33,    33,   106,   107,    33,
+      33,     3,    31,    34,    34,    33,    95,    96,    97,    98,
+      99,   103,     0,     1,    34,     3,    34,   106,   107,    34,
+       8,     9,    10,     1,    35,     3,    31,    31,    31,    35,
+       8,     9,    10,    21,    22,    24,    25,    26,    27,    28,
+      34,    29,    30,    21,    22,    31,    35,    35,    23,    23,
+      31,    29,    30,     1,    32,     3,    -1,    35,    -1,    -1,
+       8,     9,    10,    -1,    -1,    -1,    -1,    -1,     1,    -1,
+       3,    -1,    -1,    21,    22,     8,     9,    10,    -1,    -1,
+      -1,    29,    30,     1,    32,     3,    -1,    35,    21,    22,
+       8,     9,    10,    -1,    -1,    -1,    29,    30,     1,    32,
+       3,    -1,    35,    21,    22,     8,     9,    10,    -1,    -1,
+      -1,    29,    30,     1,    32,     3,    -1,    35,    21,    22,
+       8,     9,    10,    -1,    -1,    -1,    29,    30,    -1,    32,
       -1,    -1,    35,    21,    22,    24,    25,    26,    27,    28,
       -1,    29,    30,    -1,    32,    34,     1,    35,     3,     4,
-       5,     6,     7,    15,    16,    17,    18,    19,    20,    14,
-      -1,    -1,    24,    25,    26,    27,    28,    -1,    -1,    24,
-      25,    24,    25,    26,    27,    28,    -1,    -1,    33,    -1,
-      -1,    -1,    35,    24,    25,    26,    27,    28,    24,    25,
-      26,    27,    28,    -1,    35,    -1,    -1,    -1,    -1,    35,
-      24,    25,    26,    27,    28,    24,    25,    26,    27,    28,
-      -1,    35,    -1,    -1,    -1,    34
+       5,     6,     7,     3,     4,     5,     6,     7,    -1,    14,
+      -1,    -1,    -1,    -1,    14,    -1,    -1,    -1,    -1,    24,
+      25,    -1,    -1,    -1,    24,    25,    -1,    -1,    33,    -1,
+      -1,    -1,    -1,    33,    15,    16,    17,    18,    19,    20,
+      -1,    -1,    -1,    24,    25,    26,    27,    28,    24,    25,
+      26,    27,    28,    24,    25,    26,    27,    28,    -1,    35,
+      -1,    -1,    -1,    -1,    35,    24,    25,    26,    27,    28,
+      -1,    -1,    -1,    -1,    -1,    34
 };
 
 /* YYSTOS[STATE-NUM] -- The symbol kind of the accessing symbol of
@@ -734,39 +788,46 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,    37,     0,     1,     3,     8,     9,    10,    21,    22,
-      29,    30,    35,    38,    39,    40,    46,    47,    48,    49,
-      35,    11,     3,     3,     3,    33,    33,    33,    33,     3,
-       4,     5,     6,     7,    24,    25,    33,    41,    45,    11,
-      35,    11,    35,    11,    35,    14,    41,    42,    43,     1,
-      42,     3,    41,    41,    41,    41,    24,    25,    26,    27,
-      28,    35,    41,    41,    41,    33,    15,    16,    17,    18,
-      19,    20,    44,    34,    12,    13,    34,    34,    34,    34,
-      34,    41,    41,    41,    41,    41,    35,    35,    35,    42,
-      41,    31,    41,    43,    43,    31,    31,    35,    35,    34,
-      37,    37,    37,    32,    32,    32,    23,    23,    31,    31,
-      37,    37,    32,    32
+      29,    30,    35,    38,    39,    43,    61,    67,    70,    71,
+      35,    11,     3,     3,     3,    33,    33,    33,    33,    44,
+      11,    35,    11,    35,    11,    35,    68,     1,    62,    64,
+       3,    72,     3,     4,     5,     6,     7,    24,    25,    33,
+      45,    60,    40,    41,    42,    14,    45,    54,    58,    34,
+      54,    54,    34,    45,    47,    46,    53,    24,    25,    26,
+      27,    28,    35,    45,    45,    45,    33,    15,    16,    17,
+      18,    19,    20,    59,    34,    12,    13,    31,    34,    34,
+      35,    34,    45,    45,    45,    49,    48,    50,    51,    52,
+      35,    35,    35,    57,    45,    31,    55,    56,    37,    31,
+      31,    35,    34,    45,    45,    45,    45,    45,    54,    69,
+      45,    58,    58,    32,    63,    65,    34,    37,    23,    37,
+      37,    32,    31,    32,    32,    37,    23,    32,    31,    66,
+      37,    32
 };
 
 /* YYR1[RULE-NUM] -- Symbol kind of the left-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr1[] =
 {
        0,    36,    37,    37,    38,    38,    38,    38,    38,    38,
-      38,    38,    39,    39,    39,    39,    39,    39,    40,    41,
-      41,    41,    41,    41,    41,    41,    41,    41,    42,    42,
-      42,    42,    42,    43,    44,    44,    44,    44,    44,    44,
-      45,    45,    45,    45,    45,    46,    46,    46,    46,    47,
-      48,    49
+      38,    38,    39,    39,    39,    40,    39,    41,    39,    42,
+      39,    44,    43,    45,    46,    45,    47,    45,    48,    45,
+      49,    45,    50,    45,    51,    45,    52,    45,    53,    45,
+      54,    54,    55,    54,    56,    54,    57,    54,    58,    59,
+      59,    59,    59,    59,    59,    60,    60,    60,    60,    60,
+      62,    63,    61,    64,    65,    66,    61,    61,    61,    68,
+      69,    67,    70,    72,    71
 };
 
 /* YYR2[RULE-NUM] -- Number of symbols on the right-hand side of rule RULE-NUM.  */
 static const yytype_int8 yyr2[] =
 {
        0,     2,     0,     2,     1,     1,     1,     1,     1,     1,
-       1,     2,     3,     3,     3,     5,     5,     5,     4,     1,
-       2,     2,     3,     3,     3,     3,     3,     3,     1,     1,
-       3,     3,     4,     3,     1,     1,     1,     1,     1,     1,
-       1,     1,     1,     1,     1,     7,    11,     7,    11,     7,
-       5,     5
+       1,     2,     3,     3,     3,     0,     6,     0,     6,     0,
+       6,     0,     5,     1,     0,     3,     0,     3,     0,     4,
+       0,     4,     0,     4,     0,     4,     0,     4,     0,     4,
+       1,     1,     0,     4,     0,     4,     0,     5,     3,     1,
+       1,     1,     1,     1,     1,     1,     1,     1,     1,     1,
+       0,     0,     9,     0,     0,     0,    14,     7,    11,     0,
+       0,     9,     5,     0,     6
 };
 
 
@@ -1499,194 +1560,380 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 4: /* input: SEMICOLON  */
+#line 84 "akos.y"
+                { out << ";\n"; }
+#line 1567 "akos.tab.c"
+    break;
+
   case 12: /* var_declaration: TYPE_INT IDENTIFIER SEMICOLON  */
-#line 89 "akos.y"
-                                    { declare((yyvsp[-1].variable_name), 1); }
-#line 1506 "akos.tab.c"
+#line 95 "akos.y"
+                                    { declare((yyvsp[-1].variable_name), 1); out << indent() << "int " << (yyvsp[-1].variable_name) << ";\n"; }
+#line 1573 "akos.tab.c"
     break;
 
   case 13: /* var_declaration: TYPE_DOUBLE IDENTIFIER SEMICOLON  */
-#line 90 "akos.y"
-                                       { declare((yyvsp[-1].variable_name), 2); }
-#line 1512 "akos.tab.c"
+#line 96 "akos.y"
+                                       { declare((yyvsp[-1].variable_name), 2); out << indent() << "double " << (yyvsp[-1].variable_name) << ";\n"; }
+#line 1579 "akos.tab.c"
     break;
 
   case 14: /* var_declaration: TYPE_BOOL IDENTIFIER SEMICOLON  */
-#line 91 "akos.y"
-                                     { declare((yyvsp[-1].variable_name), 0); }
-#line 1518 "akos.tab.c"
+#line 97 "akos.y"
+                                     { declare((yyvsp[-1].variable_name), 0); out << indent() << "bool " << (yyvsp[-1].variable_name) << ";\n"; }
+#line 1585 "akos.tab.c"
     break;
 
-  case 15: /* var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 92 "akos.y"
-                                                             { declare((yyvsp[-3].variable_name), 1); checkAssignmentType(1, (yyvsp[-1].type)); }
-#line 1524 "akos.tab.c"
-    break;
-
-  case 16: /* var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 93 "akos.y"
-                                                                { declare((yyvsp[-3].variable_name), 2); checkAssignmentType(2, (yyvsp[-1].type));}
-#line 1530 "akos.tab.c"
-    break;
-
-  case 17: /* var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
-#line 94 "akos.y"
-                                                              { declare((yyvsp[-3].variable_name), 0); checkAssignmentType(0, (yyvsp[-1].type));}
-#line 1536 "akos.tab.c"
-    break;
-
-  case 18: /* var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON  */
+  case 15: /* $@1: %empty  */
 #line 98 "akos.y"
-                                                  { if(checkDeclared((yyvsp[-3].variable_name)) == true) { checkAssignmentType(getType((yyvsp[-3].variable_name)), (yyvsp[-1].type));} }
-#line 1542 "akos.tab.c"
+                                        { out << indent() << "int " << (yyvsp[-1].variable_name) << "="; }
+#line 1591 "akos.tab.c"
     break;
 
-  case 19: /* expression: value  */
-#line 102 "akos.y"
-            { (yyval.type) = (yyvsp[0].type); }
-#line 1548 "akos.tab.c"
+  case 16: /* var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP $@1 expression SEMICOLON  */
+#line 98 "akos.y"
+                                                                                                                        { declare((yyvsp[-4].variable_name), 1); checkAssignmentType(1, (yyvsp[-1].type)); out << ";\n";}
+#line 1597 "akos.tab.c"
     break;
 
-  case 20: /* expression: OP_ADD expression  */
-#line 103 "akos.y"
-                        { (yyval.type) = (yyvsp[0].type); }
-#line 1554 "akos.tab.c"
+  case 17: /* $@2: %empty  */
+#line 99 "akos.y"
+                                           { out << indent() << "double " << (yyvsp[-1].variable_name) << "="; }
+#line 1603 "akos.tab.c"
     break;
 
-  case 21: /* expression: OP_SUB expression  */
+  case 18: /* var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP $@2 expression SEMICOLON  */
+#line 99 "akos.y"
+                                                                                                                              { declare((yyvsp[-4].variable_name), 2); checkAssignmentType(2, (yyvsp[-1].type)); out << ";\n"; }
+#line 1609 "akos.tab.c"
+    break;
+
+  case 19: /* $@3: %empty  */
+#line 100 "akos.y"
+                                         { out << indent() << "bool " << (yyvsp[-1].variable_name) << "="; }
+#line 1615 "akos.tab.c"
+    break;
+
+  case 20: /* var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP $@3 expression SEMICOLON  */
+#line 100 "akos.y"
+                                                                                                                          { declare((yyvsp[-4].variable_name), 0); checkAssignmentType(0, (yyvsp[-1].type)); out << ";\n"; }
+#line 1621 "akos.tab.c"
+    break;
+
+  case 21: /* $@4: %empty  */
 #line 104 "akos.y"
-                        { (yyval.type) = (yyvsp[0].type); }
-#line 1560 "akos.tab.c"
+                             { out << indent() << (yyvsp[-1].variable_name) << "="; }
+#line 1627 "akos.tab.c"
     break;
 
-  case 22: /* expression: expression OP_ADD expression  */
-#line 105 "akos.y"
-                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1566 "akos.tab.c"
+  case 22: /* var_assignment: IDENTIFIER ASSIGNMENT_OP $@4 expression SEMICOLON  */
+#line 104 "akos.y"
+                                                                                                   { if(checkDeclared((yyvsp[-4].variable_name)) == true) { checkAssignmentType(getType((yyvsp[-4].variable_name)), (yyvsp[-1].type)); } out << ";\n"; }
+#line 1633 "akos.tab.c"
     break;
 
-  case 23: /* expression: expression OP_SUB expression  */
-#line 106 "akos.y"
-                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1572 "akos.tab.c"
-    break;
-
-  case 24: /* expression: expression OP_MUL expression  */
-#line 107 "akos.y"
-                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1578 "akos.tab.c"
-    break;
-
-  case 25: /* expression: expression OP_DIV expression  */
+  case 23: /* expression: value  */
 #line 108 "akos.y"
-                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1584 "akos.tab.c"
+            { (yyval.type) = (yyvsp[0].type); }
+#line 1639 "akos.tab.c"
     break;
 
-  case 26: /* expression: expression OP_MOD expression  */
+  case 24: /* $@5: %empty  */
 #line 109 "akos.y"
-                                   { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1590 "akos.tab.c"
+             { out << "+"; }
+#line 1645 "akos.tab.c"
     break;
 
-  case 27: /* expression: OPEN_PAREN expression CLOSE_PAREN  */
+  case 25: /* expression: OP_ADD $@5 expression  */
+#line 109 "akos.y"
+                                        { (yyval.type) = (yyvsp[0].type); }
+#line 1651 "akos.tab.c"
+    break;
+
+  case 26: /* $@6: %empty  */
 #line 110 "akos.y"
-                                        { (yyval.type) = (yyvsp[-1].type); }
-#line 1596 "akos.tab.c"
+             { out << "-"; }
+#line 1657 "akos.tab.c"
     break;
 
-  case 28: /* logical_expression: expression  */
+  case 27: /* expression: OP_SUB $@6 expression  */
+#line 110 "akos.y"
+                                        { (yyval.type) = (yyvsp[0].type); }
+#line 1663 "akos.tab.c"
+    break;
+
+  case 28: /* $@7: %empty  */
+#line 111 "akos.y"
+                        { out << "+"; }
+#line 1669 "akos.tab.c"
+    break;
+
+  case 29: /* expression: expression OP_ADD $@7 expression  */
+#line 111 "akos.y"
+                                                   { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1675 "akos.tab.c"
+    break;
+
+  case 30: /* $@8: %empty  */
+#line 112 "akos.y"
+                        { out << "-"; }
+#line 1681 "akos.tab.c"
+    break;
+
+  case 31: /* expression: expression OP_SUB $@8 expression  */
+#line 112 "akos.y"
+                                                   { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1687 "akos.tab.c"
+    break;
+
+  case 32: /* $@9: %empty  */
+#line 113 "akos.y"
+                        { out << "*"; }
+#line 1693 "akos.tab.c"
+    break;
+
+  case 33: /* expression: expression OP_MUL $@9 expression  */
+#line 113 "akos.y"
+                                                   { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1699 "akos.tab.c"
+    break;
+
+  case 34: /* $@10: %empty  */
+#line 114 "akos.y"
+                        { out << "/"; }
+#line 1705 "akos.tab.c"
+    break;
+
+  case 35: /* expression: expression OP_DIV $@10 expression  */
+#line 114 "akos.y"
+                                                   { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1711 "akos.tab.c"
+    break;
+
+  case 36: /* $@11: %empty  */
 #line 115 "akos.y"
-                 { (yyval.type) = (yyvsp[0].type); }
-#line 1602 "akos.tab.c"
+                        { out << "%"; }
+#line 1717 "akos.tab.c"
     break;
 
-  case 29: /* logical_expression: relational_expression  */
+  case 37: /* expression: expression OP_MOD $@11 expression  */
+#line 115 "akos.y"
+                                                   { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1723 "akos.tab.c"
+    break;
+
+  case 38: /* $@12: %empty  */
 #line 116 "akos.y"
+                 { out << "("; }
+#line 1729 "akos.tab.c"
+    break;
+
+  case 39: /* expression: OPEN_PAREN $@12 expression CLOSE_PAREN  */
+#line 116 "akos.y"
+                                                        { (yyval.type) = (yyvsp[-1].type); out << ")"; }
+#line 1735 "akos.tab.c"
+    break;
+
+  case 40: /* logical_expression: expression  */
+#line 121 "akos.y"
+                 { (yyval.type) = (yyvsp[0].type); }
+#line 1741 "akos.tab.c"
+    break;
+
+  case 41: /* logical_expression: relational_expression  */
+#line 122 "akos.y"
                             { (yyval.type) = (yyvsp[0].type); }
-#line 1608 "akos.tab.c"
+#line 1747 "akos.tab.c"
     break;
 
-  case 30: /* logical_expression: relational_expression REL_AND relational_expression  */
-#line 117 "akos.y"
-                                                          { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1614 "akos.tab.c"
-    break;
-
-  case 31: /* logical_expression: relational_expression REL_OR relational_expression  */
-#line 118 "akos.y"
-                                                         { (yyval.type) = commonType((yyvsp[-2].type), (yyvsp[0].type)); }
-#line 1620 "akos.tab.c"
-    break;
-
-  case 32: /* logical_expression: REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN  */
-#line 119 "akos.y"
-                                                        { (yyval.type) = (yyvsp[-1].type); }
-#line 1626 "akos.tab.c"
-    break;
-
-  case 33: /* relational_expression: expression relation expression  */
+  case 42: /* $@13: %empty  */
 #line 123 "akos.y"
+                                    { out << "&&"; }
+#line 1753 "akos.tab.c"
+    break;
+
+  case 43: /* logical_expression: relational_expression REL_AND $@13 relational_expression  */
+#line 123 "akos.y"
+                                                                           { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1759 "akos.tab.c"
+    break;
+
+  case 44: /* $@14: %empty  */
+#line 124 "akos.y"
+                                   { out << "||"; }
+#line 1765 "akos.tab.c"
+    break;
+
+  case 45: /* logical_expression: relational_expression REL_OR $@14 relational_expression  */
+#line 124 "akos.y"
+                                                                          { (yyval.type) = commonType((yyvsp[-3].type), (yyvsp[0].type)); }
+#line 1771 "akos.tab.c"
+    break;
+
+  case 46: /* $@15: %empty  */
+#line 125 "akos.y"
+                         { out << "!("; }
+#line 1777 "akos.tab.c"
+    break;
+
+  case 47: /* logical_expression: REL_NOT OPEN_PAREN $@15 logical_expression CLOSE_PAREN  */
+#line 125 "akos.y"
+                                                                         { (yyval.type) = (yyvsp[-1].type); out << ")"; }
+#line 1783 "akos.tab.c"
+    break;
+
+  case 48: /* relational_expression: expression relation expression  */
+#line 129 "akos.y"
                                    { (yyval.type) = 0; }
-#line 1632 "akos.tab.c"
+#line 1789 "akos.tab.c"
     break;
 
-  case 40: /* value: INTEGER  */
+  case 49: /* relation: REL_EQ  */
+#line 133 "akos.y"
+             { out << "=="; }
+#line 1795 "akos.tab.c"
+    break;
+
+  case 50: /* relation: REL_NOTEQ  */
+#line 134 "akos.y"
+                { out << "!="; }
+#line 1801 "akos.tab.c"
+    break;
+
+  case 51: /* relation: REL_GT  */
 #line 135 "akos.y"
-              { (yyval.type) = 1; }
-#line 1638 "akos.tab.c"
+             { out << ">"; }
+#line 1807 "akos.tab.c"
     break;
 
-  case 41: /* value: TRUE  */
+  case 52: /* relation: REL_LT  */
 #line 136 "akos.y"
-           { (yyval.type) = 0; }
-#line 1644 "akos.tab.c"
+             { out << "<"; }
+#line 1813 "akos.tab.c"
     break;
 
-  case 42: /* value: FALSE  */
+  case 53: /* relation: REL_GTE  */
 #line 137 "akos.y"
-            { (yyval.type) = 0; }
-#line 1650 "akos.tab.c"
+              { out << ">="; }
+#line 1819 "akos.tab.c"
     break;
 
-  case 43: /* value: DOUBLE  */
+  case 54: /* relation: REL_LTE  */
 #line 138 "akos.y"
-             { (yyval.type) = 2; }
-#line 1656 "akos.tab.c"
+              { out << "<="; }
+#line 1825 "akos.tab.c"
     break;
 
-  case 44: /* value: IDENTIFIER  */
-#line 139 "akos.y"
-                 { checkDeclared((yyvsp[0].variable_name)); (yyval.type) = getType((yyvsp[0].variable_name)); }
-#line 1662 "akos.tab.c"
+  case 55: /* value: INTEGER  */
+#line 141 "akos.y"
+              { (yyval.type) = 1; out << (yyvsp[0].integer_value); }
+#line 1831 "akos.tab.c"
     break;
 
-  case 45: /* if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE  */
+  case 56: /* value: TRUE  */
+#line 142 "akos.y"
+           { (yyval.type) = 0; out << "true"; }
+#line 1837 "akos.tab.c"
+    break;
+
+  case 57: /* value: FALSE  */
 #line 143 "akos.y"
-                                                                                      { checkAssignmentType(0, (yyvsp[-4].type)); }
-#line 1668 "akos.tab.c"
+            { (yyval.type) = 0; out << "false"; }
+#line 1843 "akos.tab.c"
     break;
 
-  case 46: /* if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE  */
+  case 58: /* value: DOUBLE  */
 #line 144 "akos.y"
-                                                                                                                              { checkAssignmentType(0, (yyvsp[-8].type)); }
-#line 1674 "akos.tab.c"
+             { (yyval.type) = 2; out << (yyvsp[0].double_value); }
+#line 1849 "akos.tab.c"
     break;
 
-  case 49: /* while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE  */
+  case 59: /* value: IDENTIFIER  */
+#line 145 "akos.y"
+                 { checkDeclared((yyvsp[0].variable_name)); (yyval.type) = getType((yyvsp[0].variable_name)); out << (yyvsp[0].variable_name); }
+#line 1855 "akos.tab.c"
+    break;
+
+  case 60: /* $@16: %empty  */
+#line 149 "akos.y"
+                        { out << indent() << "if("; }
+#line 1861 "akos.tab.c"
+    break;
+
+  case 61: /* $@17: %empty  */
+#line 149 "akos.y"
+                                                                                                { out << ") {\n"; depth++; }
+#line 1867 "akos.tab.c"
+    break;
+
+  case 62: /* if_statement: KEY_IF OPEN_PAREN $@16 logical_expression CLOSE_PAREN OPEN_BRACE $@17 program CLOSE_BRACE  */
+#line 149 "akos.y"
+                                                                                                                                                 { checkAssignmentType(0, (yyvsp[-5].type)); depth--; out << indent() << "}\n"; }
+#line 1873 "akos.tab.c"
+    break;
+
+  case 63: /* $@18: %empty  */
 #line 150 "akos.y"
-                                                                                     { checkAssignmentType(0, (yyvsp[-4].type)); }
-#line 1680 "akos.tab.c"
+                        { out << indent() << "if("; }
+#line 1879 "akos.tab.c"
     break;
 
-  case 50: /* read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON  */
-#line 154 "akos.y"
-                                                      { checkDeclared((yyvsp[-2].variable_name)); }
-#line 1686 "akos.tab.c"
+  case 64: /* $@19: %empty  */
+#line 150 "akos.y"
+                                                                                                { out << ") {\n"; depth++; }
+#line 1885 "akos.tab.c"
+    break;
+
+  case 65: /* $@20: %empty  */
+#line 150 "akos.y"
+                                                                                                                                                                     { depth--; out<< indent() << "} else {\n"; depth++; }
+#line 1891 "akos.tab.c"
+    break;
+
+  case 66: /* if_statement: KEY_IF OPEN_PAREN $@18 logical_expression CLOSE_PAREN OPEN_BRACE $@19 program CLOSE_BRACE KEY_ELSE OPEN_BRACE $@20 program CLOSE_BRACE  */
+#line 150 "akos.y"
+                                                                                                                                                                                                                                               { checkAssignmentType(0, (yyvsp[-10].type)); depth--; out << indent() << "}\n"; }
+#line 1897 "akos.tab.c"
+    break;
+
+  case 69: /* $@21: %empty  */
+#line 156 "akos.y"
+                       { out << indent() << "while("; }
+#line 1903 "akos.tab.c"
+    break;
+
+  case 70: /* $@22: %empty  */
+#line 156 "akos.y"
+                                                                                                  { out <<") {\n"; depth++; }
+#line 1909 "akos.tab.c"
+    break;
+
+  case 71: /* while_statement: KEY_WHILE OPEN_PAREN $@21 logical_expression CLOSE_PAREN OPEN_BRACE $@22 program CLOSE_BRACE  */
+#line 156 "akos.y"
+                                                                                                                                                  { checkAssignmentType(0, (yyvsp[-5].type)); depth--; out << indent() << "}\n"; }
+#line 1915 "akos.tab.c"
+    break;
+
+  case 72: /* read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON  */
+#line 160 "akos.y"
+                                                      { checkDeclared((yyvsp[-2].variable_name)); out << indent() << "cin >> " << (yyvsp[-2].variable_name) << ";\n"; }
+#line 1921 "akos.tab.c"
+    break;
+
+  case 73: /* $@23: %empty  */
+#line 164 "akos.y"
+                      {out << indent() << "cout << "; }
+#line 1927 "akos.tab.c"
+    break;
+
+  case 74: /* write_value: IO_WRITE OPEN_PAREN $@23 expression CLOSE_PAREN SEMICOLON  */
+#line 164 "akos.y"
+                                                                                         { out << " << endl;\n"; }
+#line 1933 "akos.tab.c"
     break;
 
 
-#line 1690 "akos.tab.c"
+#line 1937 "akos.tab.c"
 
       default: break;
     }
@@ -1910,13 +2157,25 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 161 "akos.y"
+#line 167 "akos.y"
 
 
 int main() {
+  out.open("akos.cpp");
+  out << "#include <iostream>\n" 
+      << "using namespace std;\n"
+      << '\n' 
+      << "int main()\n"
+      << "{\n";
+  depth++;
   yyparse();
-
   printf("Parsed!\n");
+
+  out << indent() << "return 0;\n"
+    << "}\n"
+    << '\n';
+  out.close();
+
 }
 
 void yyerror(string s) {
@@ -1989,3 +2248,9 @@ void printTable() {
   cout << "==END==" << endl;
 }
 
+string indent() {
+    string t = "";
+    for (int i = 0; i < depth; i++)
+        t += "  ";
+    return t;
+}
