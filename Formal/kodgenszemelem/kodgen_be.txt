@@ -1,0 +1,11 @@
+int x
+int y
+//int y
+float a
+float b
+a = 2.3 + b
+//x = a + 1
+y = x + 1
+ki y + 2
+int z
+ki z

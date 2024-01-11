@@ -1,31 +1,12 @@
-# This is a comment
+int a; double b = 4.3; bool c = true;
+int a = 2;
+g = 4;
 
-int age = 10;
-double temp = -100.99;
+test(3 == g) {;}
+log(tupac);
+get(heyvar);
 
-int i = 0;
-till (i <= 10 ) {
-    i = i + 1;
-    age = temp * age;
+int a = 4.12;
+double d = 123;
 
-    test (i == 5) {
-        age = (temp % 10) * 10 - age;
-    } instead {
-        # This is an else branch
-        age = -100 - (temp * 24.1 + 5);
-    }
-}
-
-# End of while # lol this is the same comment;
-int number = 10; int numberSameRow = 20;
-
-test (number != numberSameRow) {
-    get(number);
-}
-
-# Print to console
-log(number);
-
-test(!(number > 10)) {
-    ;
-}
+int d = 12.4 + a;

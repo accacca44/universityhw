@@ -1,5 +1,6 @@
 %{
 #include <stdio.h>
+#include <string.h>
 #include "akos.tab.h"
 using namespace std;
 
@@ -27,6 +28,7 @@ IDENTIFIER          [a-zA-Z_][a-zA-Z0-9_]*
 
 TYPE_INT            (int)
 TYPE_DOUBLE         (double)
+TYPE_BOOL           (bool)
 ASSIGNMENT_OP       (=)
 %%
 
@@ -35,6 +37,7 @@ ASSIGNMENT_OP       (=)
 
 {TYPE_INT}              { printToken("TYPE_INT"); return TYPE_INT; }
 {TYPE_DOUBLE}           { printToken("TYPE_DOUBLE"); return TYPE_DOUBLE; }
+{TYPE_BOOL}             { printToken("TYPE_BOOL"); return TYPE_BOOL; }
 
 "and"                   { printToken("REL_AND"); return REL_AND;}
 "or"                    { printToken("REL_OR"); return REL_OR;}
@@ -60,9 +63,11 @@ ASSIGNMENT_OP       (=)
 "log"                   { printToken("IO_WRITE"); return IO_WRITE;}
 
 {ASSIGNMENT_OP}         { printToken("ASSIGNMENT_OP"); return ASSIGNMENT_OP;}
-{INTEGER}               { printToken("INTEGER"); return INTEGER;}
-{DOUBLE}                { printToken("DOUBLE"); return DOUBLE;}
-{IDENTIFIER}            { printToken("IDENTIFIER"); return IDENTIFIER;}
+{INTEGER}               { printToken("INTEGER"); yylval.integer_value = atoi(yytext); return INTEGER;}
+{DOUBLE}                { printToken("DOUBLE"); yylval.double_value = atof(yytext); return DOUBLE;}
+"true"                  { printToken("TRUE"); return TRUE; }
+"false"                 { printToken("FALSE"); return FALSE; } 
+{IDENTIFIER}            { printToken("IDENTIFIER"); yylval.variable_name = strdup(yytext); return IDENTIFIER;}
 
 "{"               { printToken("OPEN_BRACE"); return OPEN_BRACE;}
 "}"               { printToken("CLOSE_BRACE"); return CLOSE_BRACE;}
@@ -78,12 +83,13 @@ ASSIGNMENT_OP       (=)
 
 void printToken(const char* type) {
     // printf("[%4d %4d %4d]  TYPE: %-10s TOKEN: %-15s\n", yylineno, yycol, yyleng, type, yytext);
-    yycol += yyleng;
     errorPos.col = yycol;
+    yycol += yyleng;
 }
 
 void printError() {
-    printf("[%4d %4d %4d]  ERROR: %-15s\n", yylineno, yycol, yyleng, yytext);
-    yycol += yyleng;
     errorPos.col = yycol;
+    printf("[%4d %4d %4d]  ERROR: %-15s\n", yylineno, errorPos.col, yyleng, yytext);
+    yycol += yyleng;
 }
+

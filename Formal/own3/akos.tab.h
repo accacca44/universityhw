@@ -57,34 +57,37 @@ extern int yydebug;
     IDENTIFIER = 258,              /* IDENTIFIER  */
     INTEGER = 259,                 /* INTEGER  */
     DOUBLE = 260,                  /* DOUBLE  */
-    TYPE_INT = 261,                /* TYPE_INT  */
-    TYPE_DOUBLE = 262,             /* TYPE_DOUBLE  */
-    ASSIGNMENT_OP = 263,           /* ASSIGNMENT_OP  */
-    REL_AND = 264,                 /* REL_AND  */
-    REL_OR = 265,                  /* REL_OR  */
-    REL_NOT = 266,                 /* REL_NOT  */
-    REL_NOTEQ = 267,               /* REL_NOTEQ  */
-    REL_EQ = 268,                  /* REL_EQ  */
-    REL_LT = 269,                  /* REL_LT  */
-    REL_GT = 270,                  /* REL_GT  */
-    REL_LTE = 271,                 /* REL_LTE  */
-    REL_GTE = 272,                 /* REL_GTE  */
-    KEY_WHILE = 273,               /* KEY_WHILE  */
-    KEY_IF = 274,                  /* KEY_IF  */
-    KEY_ELSE = 275,                /* KEY_ELSE  */
-    OP_SUB = 276,                  /* OP_SUB  */
-    OP_ADD = 277,                  /* OP_ADD  */
-    OP_MUL = 278,                  /* OP_MUL  */
-    OP_DIV = 279,                  /* OP_DIV  */
-    OP_MOD = 280,                  /* OP_MOD  */
-    IO_READ = 281,                 /* IO_READ  */
-    IO_WRITE = 282,                /* IO_WRITE  */
-    OPEN_BRACE = 283,              /* OPEN_BRACE  */
-    CLOSE_BRACE = 284,             /* CLOSE_BRACE  */
-    OPEN_PAREN = 285,              /* OPEN_PAREN  */
-    CLOSE_PAREN = 286,             /* CLOSE_PAREN  */
-    SEMICOLON = 287,               /* SEMICOLON  */
-    COMMA = 288                    /* COMMA  */
+    TRUE = 261,                    /* TRUE  */
+    FALSE = 262,                   /* FALSE  */
+    TYPE_INT = 263,                /* TYPE_INT  */
+    TYPE_DOUBLE = 264,             /* TYPE_DOUBLE  */
+    TYPE_BOOL = 265,               /* TYPE_BOOL  */
+    ASSIGNMENT_OP = 266,           /* ASSIGNMENT_OP  */
+    REL_AND = 267,                 /* REL_AND  */
+    REL_OR = 268,                  /* REL_OR  */
+    REL_NOT = 269,                 /* REL_NOT  */
+    REL_NOTEQ = 270,               /* REL_NOTEQ  */
+    REL_EQ = 271,                  /* REL_EQ  */
+    REL_LT = 272,                  /* REL_LT  */
+    REL_GT = 273,                  /* REL_GT  */
+    REL_LTE = 274,                 /* REL_LTE  */
+    REL_GTE = 275,                 /* REL_GTE  */
+    KEY_WHILE = 276,               /* KEY_WHILE  */
+    KEY_IF = 277,                  /* KEY_IF  */
+    KEY_ELSE = 278,                /* KEY_ELSE  */
+    OP_SUB = 279,                  /* OP_SUB  */
+    OP_ADD = 280,                  /* OP_ADD  */
+    OP_MUL = 281,                  /* OP_MUL  */
+    OP_DIV = 282,                  /* OP_DIV  */
+    OP_MOD = 283,                  /* OP_MOD  */
+    IO_READ = 284,                 /* IO_READ  */
+    IO_WRITE = 285,                /* IO_WRITE  */
+    OPEN_BRACE = 286,              /* OPEN_BRACE  */
+    CLOSE_BRACE = 287,             /* CLOSE_BRACE  */
+    OPEN_PAREN = 288,              /* OPEN_PAREN  */
+    CLOSE_PAREN = 289,             /* CLOSE_PAREN  */
+    SEMICOLON = 290,               /* SEMICOLON  */
+    COMMA = 291                    /* COMMA  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -93,13 +96,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 18 "akos.y"
+#line 35 "akos.y"
 
   int         integer_value;
   double      double_value;
   char*       variable_name;
 
-#line 103 "akos.tab.h"
+#line 106 "akos.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

@@ -21,131 +21,138 @@ Grammar
 
    11 var_declaration: TYPE_INT IDENTIFIER SEMICOLON
    12                | TYPE_DOUBLE IDENTIFIER SEMICOLON
-   13                | TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
-   14                | TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   13                | TYPE_BOOL IDENTIFIER SEMICOLON
+   14                | TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   15                | TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   16                | TYPE_BOOL IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
 
-   15 var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   17 var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
 
-   16 expression: value
-   17           | OP_ADD expression
-   18           | OP_SUB expression
-   19           | expression OP_ADD expression
-   20           | expression OP_SUB expression
-   21           | expression OP_MUL expression
-   22           | expression OP_DIV expression
-   23           | expression OP_MOD expression
-   24           | OPEN_PAREN expression CLOSE_PAREN
+   18 expression: value
+   19           | OP_ADD expression
+   20           | OP_SUB expression
+   21           | expression OP_ADD expression
+   22           | expression OP_SUB expression
+   23           | expression OP_MUL expression
+   24           | expression OP_DIV expression
+   25           | expression OP_MOD expression
+   26           | OPEN_PAREN expression CLOSE_PAREN
 
-   25 logical_expression: expression
-   26                   | relational_expression
-   27                   | relational_expression REL_AND relational_expression
-   28                   | relational_expression REL_OR relational_expression
-   29                   | REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN
+   27 logical_expression: expression
+   28                   | relational_expression
+   29                   | relational_expression REL_AND relational_expression
+   30                   | relational_expression REL_OR relational_expression
+   31                   | REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN
 
-   30 relational_expression: expression relation expression
+   32 relational_expression: expression relation expression
 
-   31 relation: REL_EQ
-   32         | REL_NOTEQ
-   33         | REL_GT
-   34         | REL_LT
-   35         | REL_GTE
-   36         | REL_LTE
+   33 relation: REL_EQ
+   34         | REL_NOTEQ
+   35         | REL_GT
+   36         | REL_LT
+   37         | REL_GTE
+   38         | REL_LTE
 
-   37 value: INTEGER
-   38      | DOUBLE
-   39      | IDENTIFIER
+   39 value: INTEGER
+   40      | TRUE
+   41      | FALSE
+   42      | DOUBLE
+   43      | IDENTIFIER
 
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-   42             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   46             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
 
-   45 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
+   49 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
 
-   46 write_value: IO_WRITE OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
+   50 write_value: IO_WRITE OPEN_PAREN expression CLOSE_PAREN SEMICOLON
 
 
 Terminals, with rules where they appear
 
     $end (0) 0
-    error (256) 10 42 43
-    IDENTIFIER <variable_name> (258) 11 12 13 14 15 39 45 46
-    INTEGER <integer_value> (259) 37
-    DOUBLE <double_value> (260) 38
-    TYPE_INT (261) 11 13
-    TYPE_DOUBLE (262) 12 14
-    ASSIGNMENT_OP (263) 13 14 15
-    REL_AND (264) 27
-    REL_OR (265) 28
-    REL_NOT (266) 29
-    REL_NOTEQ (267) 32
-    REL_EQ (268) 31
-    REL_LT (269) 34
-    REL_GT (270) 33
-    REL_LTE (271) 36
-    REL_GTE (272) 35
-    KEY_WHILE (273) 44
-    KEY_IF (274) 40 41 42 43
-    KEY_ELSE (275) 41 43
-    OP_SUB (276) 18 20
-    OP_ADD (277) 17 19
-    OP_MUL (278) 21
-    OP_DIV (279) 22
-    OP_MOD (280) 23
-    IO_READ (281) 45
-    IO_WRITE (282) 46
-    OPEN_BRACE (283) 40 41 42 43 44
-    CLOSE_BRACE (284) 40 41 42 43 44
-    OPEN_PAREN (285) 24 29 40 41 42 43 44 45 46
-    CLOSE_PAREN (286) 24 29 40 41 42 43 44 45 46
-    SEMICOLON (287) 3 10 11 12 13 14 15 45 46
-    COMMA (288)
+    error (256) 10 46 47
+    IDENTIFIER <variable_name> (258) 11 12 13 14 15 16 17 43 49
+    INTEGER <integer_value> (259) 39
+    DOUBLE <double_value> (260) 42
+    TRUE (261) 40
+    FALSE (262) 41
+    TYPE_INT (263) 11 14
+    TYPE_DOUBLE (264) 12 15
+    TYPE_BOOL (265) 13 16
+    ASSIGNMENT_OP (266) 14 15 16 17
+    REL_AND (267) 29
+    REL_OR (268) 30
+    REL_NOT (269) 31
+    REL_NOTEQ (270) 34
+    REL_EQ (271) 33
+    REL_LT (272) 36
+    REL_GT (273) 35
+    REL_LTE (274) 38
+    REL_GTE (275) 37
+    KEY_WHILE (276) 48
+    KEY_IF (277) 44 45 46 47
+    KEY_ELSE (278) 45 47
+    OP_SUB (279) 20 22
+    OP_ADD (280) 19 21
+    OP_MUL (281) 23
+    OP_DIV (282) 24
+    OP_MOD (283) 25
+    IO_READ (284) 49
+    IO_WRITE (285) 50
+    OPEN_BRACE (286) 44 45 46 47 48
+    CLOSE_BRACE (287) 44 45 46 47 48
+    OPEN_PAREN (288) 26 31 44 45 46 47 48 49 50
+    CLOSE_PAREN (289) 26 31 44 45 46 47 48 49 50
+    SEMICOLON (290) 3 10 11 12 13 14 15 16 17 49 50
+    COMMA (291)
 
 
 Nonterminals, with rules where they appear
 
-    $accept (34)
+    $accept (37)
         on left: 0
-    program (35)
+    program (38)
         on left: 1 2
-        on right: 0 2 40 41 42 43 44
-    input (36)
+        on right: 0 2 44 45 46 47 48
+    input (39)
         on left: 3 4 5 6 7 8 9 10
         on right: 2
-    var_declaration (37)
-        on left: 11 12 13 14
+    var_declaration (40)
+        on left: 11 12 13 14 15 16
         on right: 4
-    var_assignment (38)
-        on left: 15
+    var_assignment (41)
+        on left: 17
         on right: 5
-    expression (39)
-        on left: 16 17 18 19 20 21 22 23 24
-        on right: 13 14 15 17 18 19 20 21 22 23 24 25 30
-    logical_expression (40)
-        on left: 25 26 27 28 29
-        on right: 29 40 41 44
-    relational_expression (41)
-        on left: 30
-        on right: 26 27 28
-    relation (42)
-        on left: 31 32 33 34 35 36
-        on right: 30
-    value (43)
-        on left: 37 38 39
-        on right: 16
-    if_statement (44)
-        on left: 40 41 42 43
+    expression (42)
+        on left: 18 19 20 21 22 23 24 25 26
+        on right: 14 15 16 17 19 20 21 22 23 24 25 26 27 32 50
+    logical_expression (43)
+        on left: 27 28 29 30 31
+        on right: 31 44 45 48
+    relational_expression (44)
+        on left: 32
+        on right: 28 29 30
+    relation (45)
+        on left: 33 34 35 36 37 38
+        on right: 32
+    value (46)
+        on left: 39 40 41 42 43
+        on right: 18
+    if_statement (47)
+        on left: 44 45 46 47
         on right: 6
-    while_statement (45)
-        on left: 44
+    while_statement (48)
+        on left: 48
         on right: 7
-    read_value (46)
-        on left: 45
+    read_value (49)
+        on left: 49
         on right: 8
-    write_value (47)
-        on left: 46
+    write_value (50)
+        on left: 50
         on right: 9
 
 
@@ -168,19 +175,20 @@ State 1
     IDENTIFIER   shift, and go to state 4
     TYPE_INT     shift, and go to state 5
     TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    SEMICOLON    shift, and go to state 11
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    SEMICOLON    shift, and go to state 12
 
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
 
 
 State 2
@@ -194,1137 +202,1275 @@ State 3
 
    10 input: error • SEMICOLON
 
-    SEMICOLON  shift, and go to state 19
+    SEMICOLON  shift, and go to state 20
 
 
 State 4
 
-   15 var_assignment: IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
+   17 var_assignment: IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
 
-    ASSIGNMENT_OP  shift, and go to state 20
+    ASSIGNMENT_OP  shift, and go to state 21
 
 
 State 5
 
    11 var_declaration: TYPE_INT • IDENTIFIER SEMICOLON
-   13                | TYPE_INT • IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   14                | TYPE_INT • IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
 
-    IDENTIFIER  shift, and go to state 21
+    IDENTIFIER  shift, and go to state 22
 
 
 State 6
 
    12 var_declaration: TYPE_DOUBLE • IDENTIFIER SEMICOLON
-   14                | TYPE_DOUBLE • IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
+   15                | TYPE_DOUBLE • IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
 
-    IDENTIFIER  shift, and go to state 22
+    IDENTIFIER  shift, and go to state 23
 
 
 State 7
 
-   44 while_statement: KEY_WHILE • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   13 var_declaration: TYPE_BOOL • IDENTIFIER SEMICOLON
+   16                | TYPE_BOOL • IDENTIFIER ASSIGNMENT_OP expression SEMICOLON
 
-    OPEN_PAREN  shift, and go to state 23
+    IDENTIFIER  shift, and go to state 24
 
 
 State 8
 
-   40 if_statement: KEY_IF • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   41             | KEY_IF • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-   42             | KEY_IF • OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   43             | KEY_IF • OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_PAREN  shift, and go to state 24
-
-
-State 9
-
-   45 read_value: IO_READ • OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
+   48 while_statement: KEY_WHILE • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
 
     OPEN_PAREN  shift, and go to state 25
 
 
-State 10
+State 9
 
-   46 write_value: IO_WRITE • OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
+   44 if_statement: KEY_IF • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   45             | KEY_IF • OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   46             | KEY_IF • OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   47             | KEY_IF • OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
     OPEN_PAREN  shift, and go to state 26
 
 
+State 10
+
+   49 read_value: IO_READ • OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON
+
+    OPEN_PAREN  shift, and go to state 27
+
+
 State 11
+
+   50 write_value: IO_WRITE • OPEN_PAREN expression CLOSE_PAREN SEMICOLON
+
+    OPEN_PAREN  shift, and go to state 28
+
+
+State 12
 
     3 input: SEMICOLON •
 
     $default  reduce using rule 3 (input)
 
 
-State 12
+State 13
 
     2 program: program input •
 
     $default  reduce using rule 2 (program)
 
 
-State 13
+State 14
 
     4 input: var_declaration •
 
     $default  reduce using rule 4 (input)
 
 
-State 14
+State 15
 
     5 input: var_assignment •
 
     $default  reduce using rule 5 (input)
 
 
-State 15
+State 16
 
     6 input: if_statement •
 
     $default  reduce using rule 6 (input)
 
 
-State 16
+State 17
 
     7 input: while_statement •
 
     $default  reduce using rule 7 (input)
 
 
-State 17
+State 18
 
     8 input: read_value •
 
     $default  reduce using rule 8 (input)
 
 
-State 18
+State 19
 
     9 input: write_value •
 
     $default  reduce using rule 9 (input)
 
 
-State 19
+State 20
 
    10 input: error SEMICOLON •
 
     $default  reduce using rule 10 (input)
 
 
-State 20
-
-   15 var_assignment: IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 33
-    value       go to state 34
-
-
 State 21
 
-   11 var_declaration: TYPE_INT IDENTIFIER • SEMICOLON
-   13                | TYPE_INT IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
+   17 var_assignment: IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
 
-    ASSIGNMENT_OP  shift, and go to state 35
-    SEMICOLON      shift, and go to state 36
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 37
+    value       go to state 38
 
 
 State 22
 
-   12 var_declaration: TYPE_DOUBLE IDENTIFIER • SEMICOLON
-   14                | TYPE_DOUBLE IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
+   11 var_declaration: TYPE_INT IDENTIFIER • SEMICOLON
+   14                | TYPE_INT IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
 
-    ASSIGNMENT_OP  shift, and go to state 37
-    SEMICOLON      shift, and go to state 38
+    ASSIGNMENT_OP  shift, and go to state 39
+    SEMICOLON      shift, and go to state 40
 
 
 State 23
 
-   44 while_statement: KEY_WHILE OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   12 var_declaration: TYPE_DOUBLE IDENTIFIER • SEMICOLON
+   15                | TYPE_DOUBLE IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    REL_NOT     shift, and go to state 39
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression             go to state 40
-    logical_expression     go to state 41
-    relational_expression  go to state 42
-    value                  go to state 34
+    ASSIGNMENT_OP  shift, and go to state 41
+    SEMICOLON      shift, and go to state 42
 
 
 State 24
 
-   40 if_statement: KEY_IF OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-   42             | KEY_IF OPEN_PAREN • error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN • error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   13 var_declaration: TYPE_BOOL IDENTIFIER • SEMICOLON
+   16                | TYPE_BOOL IDENTIFIER • ASSIGNMENT_OP expression SEMICOLON
 
-    error       shift, and go to state 43
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    REL_NOT     shift, and go to state 39
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression             go to state 40
-    logical_expression     go to state 44
-    relational_expression  go to state 42
-    value                  go to state 34
+    ASSIGNMENT_OP  shift, and go to state 43
+    SEMICOLON      shift, and go to state 44
 
 
 State 25
 
-   45 read_value: IO_READ OPEN_PAREN • IDENTIFIER CLOSE_PAREN SEMICOLON
+   48 while_statement: KEY_WHILE OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
 
-    IDENTIFIER  shift, and go to state 45
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    REL_NOT     shift, and go to state 45
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression             go to state 46
+    logical_expression     go to state 47
+    relational_expression  go to state 48
+    value                  go to state 38
 
 
 State 26
 
-   46 write_value: IO_WRITE OPEN_PAREN • IDENTIFIER CLOSE_PAREN SEMICOLON
+   44 if_statement: KEY_IF OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN • logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   46             | KEY_IF OPEN_PAREN • error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN • error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
-    IDENTIFIER  shift, and go to state 46
+    error       shift, and go to state 49
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    REL_NOT     shift, and go to state 45
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression             go to state 46
+    logical_expression     go to state 50
+    relational_expression  go to state 48
+    value                  go to state 38
 
 
 State 27
 
-   39 value: IDENTIFIER •
+   49 read_value: IO_READ OPEN_PAREN • IDENTIFIER CLOSE_PAREN SEMICOLON
 
-    $default  reduce using rule 39 (value)
+    IDENTIFIER  shift, and go to state 51
 
 
 State 28
 
-   37 value: INTEGER •
+   50 write_value: IO_WRITE OPEN_PAREN • expression CLOSE_PAREN SEMICOLON
 
-    $default  reduce using rule 37 (value)
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 52
+    value       go to state 38
 
 
 State 29
 
-   38 value: DOUBLE •
+   43 value: IDENTIFIER •
 
-    $default  reduce using rule 38 (value)
+    $default  reduce using rule 43 (value)
 
 
 State 30
 
-   18 expression: OP_SUB • expression
+   39 value: INTEGER •
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 47
-    value       go to state 34
+    $default  reduce using rule 39 (value)
 
 
 State 31
 
-   17 expression: OP_ADD • expression
+   42 value: DOUBLE •
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 48
-    value       go to state 34
+    $default  reduce using rule 42 (value)
 
 
 State 32
 
-   24 expression: OPEN_PAREN • expression CLOSE_PAREN
+   40 value: TRUE •
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 49
-    value       go to state 34
+    $default  reduce using rule 40 (value)
 
 
 State 33
 
-   15 var_assignment: IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
+   41 value: FALSE •
 
-    OP_SUB     shift, and go to state 50
-    OP_ADD     shift, and go to state 51
-    OP_MUL     shift, and go to state 52
-    OP_DIV     shift, and go to state 53
-    OP_MOD     shift, and go to state 54
-    SEMICOLON  shift, and go to state 55
+    $default  reduce using rule 41 (value)
 
 
 State 34
 
-   16 expression: value •
+   20 expression: OP_SUB • expression
 
-    $default  reduce using rule 16 (expression)
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 53
+    value       go to state 38
 
 
 State 35
 
-   13 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
+   19 expression: OP_ADD • expression
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
 
-    expression  go to state 56
-    value       go to state 34
+    expression  go to state 54
+    value       go to state 38
 
 
 State 36
+
+   26 expression: OPEN_PAREN • expression CLOSE_PAREN
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 55
+    value       go to state 38
+
+
+State 37
+
+   17 var_assignment: IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
+    SEMICOLON  shift, and go to state 61
+
+
+State 38
+
+   18 expression: value •
+
+    $default  reduce using rule 18 (expression)
+
+
+State 39
+
+   14 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 62
+    value       go to state 38
+
+
+State 40
 
    11 var_declaration: TYPE_INT IDENTIFIER SEMICOLON •
 
     $default  reduce using rule 11 (var_declaration)
 
 
-State 37
+State 41
 
-   14 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
+   15 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
 
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
 
-    expression  go to state 57
-    value       go to state 34
+    expression  go to state 63
+    value       go to state 38
 
 
-State 38
+State 42
 
    12 var_declaration: TYPE_DOUBLE IDENTIFIER SEMICOLON •
 
     $default  reduce using rule 12 (var_declaration)
 
 
-State 39
-
-   29 logical_expression: REL_NOT • OPEN_PAREN logical_expression CLOSE_PAREN
-
-    OPEN_PAREN  shift, and go to state 58
-
-
-State 40
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-   25 logical_expression: expression •
-   30 relational_expression: expression • relation expression
-
-    REL_NOTEQ  shift, and go to state 59
-    REL_EQ     shift, and go to state 60
-    REL_LT     shift, and go to state 61
-    REL_GT     shift, and go to state 62
-    REL_LTE    shift, and go to state 63
-    REL_GTE    shift, and go to state 64
-    OP_SUB     shift, and go to state 50
-    OP_ADD     shift, and go to state 51
-    OP_MUL     shift, and go to state 52
-    OP_DIV     shift, and go to state 53
-    OP_MOD     shift, and go to state 54
-
-    $default  reduce using rule 25 (logical_expression)
-
-    relation  go to state 65
-
-
-State 41
-
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-
-    CLOSE_PAREN  shift, and go to state 66
-
-
-State 42
-
-   26 logical_expression: relational_expression •
-   27                   | relational_expression • REL_AND relational_expression
-   28                   | relational_expression • REL_OR relational_expression
-
-    REL_AND  shift, and go to state 67
-    REL_OR   shift, and go to state 68
-
-    $default  reduce using rule 26 (logical_expression)
-
-
 State 43
 
-   42 if_statement: KEY_IF OPEN_PAREN error • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN error • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   16 var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP • expression SEMICOLON
 
-    CLOSE_PAREN  shift, and go to state 69
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 64
+    value       go to state 38
 
 
 State 44
 
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    CLOSE_PAREN  shift, and go to state 70
-
-
-State 45
-
-   45 read_value: IO_READ OPEN_PAREN IDENTIFIER • CLOSE_PAREN SEMICOLON
-
-    CLOSE_PAREN  shift, and go to state 71
-
-
-State 46
-
-   46 write_value: IO_WRITE OPEN_PAREN IDENTIFIER • CLOSE_PAREN SEMICOLON
-
-    CLOSE_PAREN  shift, and go to state 72
-
-
-State 47
-
-   18 expression: OP_SUB expression •
-   19           | expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-
-    $default  reduce using rule 18 (expression)
-
-
-State 48
-
-   17 expression: OP_ADD expression •
-   19           | expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-
-    $default  reduce using rule 17 (expression)
-
-
-State 49
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-   24           | OPEN_PAREN expression • CLOSE_PAREN
-
-    OP_SUB       shift, and go to state 50
-    OP_ADD       shift, and go to state 51
-    OP_MUL       shift, and go to state 52
-    OP_DIV       shift, and go to state 53
-    OP_MOD       shift, and go to state 54
-    CLOSE_PAREN  shift, and go to state 73
-
-
-State 50
-
-   20 expression: expression OP_SUB • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 74
-    value       go to state 34
-
-
-State 51
-
-   19 expression: expression OP_ADD • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 75
-    value       go to state 34
-
-
-State 52
-
-   21 expression: expression OP_MUL • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 76
-    value       go to state 34
-
-
-State 53
-
-   22 expression: expression OP_DIV • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 77
-    value       go to state 34
-
-
-State 54
-
-   23 expression: expression OP_MOD • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 78
-    value       go to state 34
-
-
-State 55
-
-   15 var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
-
-    $default  reduce using rule 15 (var_assignment)
-
-
-State 56
-
-   13 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_SUB     shift, and go to state 50
-    OP_ADD     shift, and go to state 51
-    OP_MUL     shift, and go to state 52
-    OP_DIV     shift, and go to state 53
-    OP_MOD     shift, and go to state 54
-    SEMICOLON  shift, and go to state 79
-
-
-State 57
-
-   14 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_SUB     shift, and go to state 50
-    OP_ADD     shift, and go to state 51
-    OP_MUL     shift, and go to state 52
-    OP_DIV     shift, and go to state 53
-    OP_MOD     shift, and go to state 54
-    SEMICOLON  shift, and go to state 80
-
-
-State 58
-
-   29 logical_expression: REL_NOT OPEN_PAREN • logical_expression CLOSE_PAREN
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    REL_NOT     shift, and go to state 39
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression             go to state 40
-    logical_expression     go to state 81
-    relational_expression  go to state 42
-    value                  go to state 34
-
-
-State 59
-
-   32 relation: REL_NOTEQ •
-
-    $default  reduce using rule 32 (relation)
-
-
-State 60
-
-   31 relation: REL_EQ •
-
-    $default  reduce using rule 31 (relation)
-
-
-State 61
-
-   34 relation: REL_LT •
-
-    $default  reduce using rule 34 (relation)
-
-
-State 62
-
-   33 relation: REL_GT •
-
-    $default  reduce using rule 33 (relation)
-
-
-State 63
-
-   36 relation: REL_LTE •
-
-    $default  reduce using rule 36 (relation)
-
-
-State 64
-
-   35 relation: REL_GTE •
-
-    $default  reduce using rule 35 (relation)
-
-
-State 65
-
-   30 relational_expression: expression relation • expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression  go to state 82
-    value       go to state 34
-
-
-State 66
-
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_BRACE  shift, and go to state 83
-
-
-State 67
-
-   27 logical_expression: relational_expression REL_AND • relational_expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression             go to state 84
-    relational_expression  go to state 85
-    value                  go to state 34
-
-
-State 68
-
-   28 logical_expression: relational_expression REL_OR • relational_expression
-
-    IDENTIFIER  shift, and go to state 27
-    INTEGER     shift, and go to state 28
-    DOUBLE      shift, and go to state 29
-    OP_SUB      shift, and go to state 30
-    OP_ADD      shift, and go to state 31
-    OPEN_PAREN  shift, and go to state 32
-
-    expression             go to state 84
-    relational_expression  go to state 86
-    value                  go to state 34
-
-
-State 69
-
-   42 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN error CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_BRACE  shift, and go to state 87
-
-
-State 70
-
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_BRACE  shift, and go to state 88
-
-
-State 71
-
-   45 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN • SEMICOLON
-
-    SEMICOLON  shift, and go to state 89
-
-
-State 72
-
-   46 write_value: IO_WRITE OPEN_PAREN IDENTIFIER CLOSE_PAREN • SEMICOLON
-
-    SEMICOLON  shift, and go to state 90
-
-
-State 73
-
-   24 expression: OPEN_PAREN expression CLOSE_PAREN •
-
-    $default  reduce using rule 24 (expression)
-
-
-State 74
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   20           | expression OP_SUB expression •
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-
-    $default  reduce using rule 20 (expression)
-
-
-State 75
-
-   19 expression: expression • OP_ADD expression
-   19           | expression OP_ADD expression •
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-
-    $default  reduce using rule 19 (expression)
-
-
-State 76
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   21           | expression OP_MUL expression •
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-
-    $default  reduce using rule 21 (expression)
-
-
-State 77
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   22           | expression OP_DIV expression •
-   23           | expression • OP_MOD expression
-
-    $default  reduce using rule 22 (expression)
-
-
-State 78
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-   23           | expression OP_MOD expression •
-
-    OP_SUB  shift, and go to state 50
-    OP_ADD  shift, and go to state 51
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-
-    $default  reduce using rule 23 (expression)
-
-
-State 79
-
-   13 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
+   13 var_declaration: TYPE_BOOL IDENTIFIER SEMICOLON •
 
     $default  reduce using rule 13 (var_declaration)
 
 
-State 80
+State 45
 
-   14 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
+   31 logical_expression: REL_NOT • OPEN_PAREN logical_expression CLOSE_PAREN
 
-    $default  reduce using rule 14 (var_declaration)
-
-
-State 81
-
-   29 logical_expression: REL_NOT OPEN_PAREN logical_expression • CLOSE_PAREN
-
-    CLOSE_PAREN  shift, and go to state 91
+    OPEN_PAREN  shift, and go to state 65
 
 
-State 82
+State 46
 
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-   30 relational_expression: expression relation expression •
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   27 logical_expression: expression •
+   32 relational_expression: expression • relation expression
 
-    OP_SUB  shift, and go to state 50
-    OP_ADD  shift, and go to state 51
-    OP_MUL  shift, and go to state 52
-    OP_DIV  shift, and go to state 53
-    OP_MOD  shift, and go to state 54
-
-    $default  reduce using rule 30 (relational_expression)
-
-
-State 83
-
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
-
-    $default  reduce using rule 1 (program)
-
-    program  go to state 92
-
-
-State 84
-
-   19 expression: expression • OP_ADD expression
-   20           | expression • OP_SUB expression
-   21           | expression • OP_MUL expression
-   22           | expression • OP_DIV expression
-   23           | expression • OP_MOD expression
-   30 relational_expression: expression • relation expression
-
-    REL_NOTEQ  shift, and go to state 59
-    REL_EQ     shift, and go to state 60
-    REL_LT     shift, and go to state 61
-    REL_GT     shift, and go to state 62
-    REL_LTE    shift, and go to state 63
-    REL_GTE    shift, and go to state 64
-    OP_SUB     shift, and go to state 50
-    OP_ADD     shift, and go to state 51
-    OP_MUL     shift, and go to state 52
-    OP_DIV     shift, and go to state 53
-    OP_MOD     shift, and go to state 54
-
-    relation  go to state 65
-
-
-State 85
-
-   27 logical_expression: relational_expression REL_AND relational_expression •
+    REL_NOTEQ  shift, and go to state 66
+    REL_EQ     shift, and go to state 67
+    REL_LT     shift, and go to state 68
+    REL_GT     shift, and go to state 69
+    REL_LTE    shift, and go to state 70
+    REL_GTE    shift, and go to state 71
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
 
     $default  reduce using rule 27 (logical_expression)
 
+    relation  go to state 72
 
-State 86
 
-   28 logical_expression: relational_expression REL_OR relational_expression •
+State 47
+
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+
+    CLOSE_PAREN  shift, and go to state 73
+
+
+State 48
+
+   28 logical_expression: relational_expression •
+   29                   | relational_expression • REL_AND relational_expression
+   30                   | relational_expression • REL_OR relational_expression
+
+    REL_AND  shift, and go to state 74
+    REL_OR   shift, and go to state 75
 
     $default  reduce using rule 28 (logical_expression)
 
 
+State 49
+
+   46 if_statement: KEY_IF OPEN_PAREN error • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN error • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    CLOSE_PAREN  shift, and go to state 76
+
+
+State 50
+
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN logical_expression • CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    CLOSE_PAREN  shift, and go to state 77
+
+
+State 51
+
+   49 read_value: IO_READ OPEN_PAREN IDENTIFIER • CLOSE_PAREN SEMICOLON
+
+    CLOSE_PAREN  shift, and go to state 78
+
+
+State 52
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   50 write_value: IO_WRITE OPEN_PAREN expression • CLOSE_PAREN SEMICOLON
+
+    OP_SUB       shift, and go to state 56
+    OP_ADD       shift, and go to state 57
+    OP_MUL       shift, and go to state 58
+    OP_DIV       shift, and go to state 59
+    OP_MOD       shift, and go to state 60
+    CLOSE_PAREN  shift, and go to state 79
+
+
+State 53
+
+   20 expression: OP_SUB expression •
+   21           | expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+
+    $default  reduce using rule 20 (expression)
+
+
+State 54
+
+   19 expression: OP_ADD expression •
+   21           | expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+
+    $default  reduce using rule 19 (expression)
+
+
+State 55
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   26           | OPEN_PAREN expression • CLOSE_PAREN
+
+    OP_SUB       shift, and go to state 56
+    OP_ADD       shift, and go to state 57
+    OP_MUL       shift, and go to state 58
+    OP_DIV       shift, and go to state 59
+    OP_MOD       shift, and go to state 60
+    CLOSE_PAREN  shift, and go to state 80
+
+
+State 56
+
+   22 expression: expression OP_SUB • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 81
+    value       go to state 38
+
+
+State 57
+
+   21 expression: expression OP_ADD • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 82
+    value       go to state 38
+
+
+State 58
+
+   23 expression: expression OP_MUL • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 83
+    value       go to state 38
+
+
+State 59
+
+   24 expression: expression OP_DIV • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 84
+    value       go to state 38
+
+
+State 60
+
+   25 expression: expression OP_MOD • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 85
+    value       go to state 38
+
+
+State 61
+
+   17 var_assignment: IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
+
+    $default  reduce using rule 17 (var_assignment)
+
+
+State 62
+
+   14 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
+    SEMICOLON  shift, and go to state 86
+
+
+State 63
+
+   15 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
+    SEMICOLON  shift, and go to state 87
+
+
+State 64
+
+   16 var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP expression • SEMICOLON
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
+    SEMICOLON  shift, and go to state 88
+
+
+State 65
+
+   31 logical_expression: REL_NOT OPEN_PAREN • logical_expression CLOSE_PAREN
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    REL_NOT     shift, and go to state 45
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression             go to state 46
+    logical_expression     go to state 89
+    relational_expression  go to state 48
+    value                  go to state 38
+
+
+State 66
+
+   34 relation: REL_NOTEQ •
+
+    $default  reduce using rule 34 (relation)
+
+
+State 67
+
+   33 relation: REL_EQ •
+
+    $default  reduce using rule 33 (relation)
+
+
+State 68
+
+   36 relation: REL_LT •
+
+    $default  reduce using rule 36 (relation)
+
+
+State 69
+
+   35 relation: REL_GT •
+
+    $default  reduce using rule 35 (relation)
+
+
+State 70
+
+   38 relation: REL_LTE •
+
+    $default  reduce using rule 38 (relation)
+
+
+State 71
+
+   37 relation: REL_GTE •
+
+    $default  reduce using rule 37 (relation)
+
+
+State 72
+
+   32 relational_expression: expression relation • expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression  go to state 90
+    value       go to state 38
+
+
+State 73
+
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
+
+    OPEN_BRACE  shift, and go to state 91
+
+
+State 74
+
+   29 logical_expression: relational_expression REL_AND • relational_expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression             go to state 92
+    relational_expression  go to state 93
+    value                  go to state 38
+
+
+State 75
+
+   30 logical_expression: relational_expression REL_OR • relational_expression
+
+    IDENTIFIER  shift, and go to state 29
+    INTEGER     shift, and go to state 30
+    DOUBLE      shift, and go to state 31
+    TRUE        shift, and go to state 32
+    FALSE       shift, and go to state 33
+    OP_SUB      shift, and go to state 34
+    OP_ADD      shift, and go to state 35
+    OPEN_PAREN  shift, and go to state 36
+
+    expression             go to state 92
+    relational_expression  go to state 94
+    value                  go to state 38
+
+
+State 76
+
+   46 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN error CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    OPEN_BRACE  shift, and go to state 95
+
+
+State 77
+
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN • OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    OPEN_BRACE  shift, and go to state 96
+
+
+State 78
+
+   49 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN • SEMICOLON
+
+    SEMICOLON  shift, and go to state 97
+
+
+State 79
+
+   50 write_value: IO_WRITE OPEN_PAREN expression CLOSE_PAREN • SEMICOLON
+
+    SEMICOLON  shift, and go to state 98
+
+
+State 80
+
+   26 expression: OPEN_PAREN expression CLOSE_PAREN •
+
+    $default  reduce using rule 26 (expression)
+
+
+State 81
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   22           | expression OP_SUB expression •
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+
+    $default  reduce using rule 22 (expression)
+
+
+State 82
+
+   21 expression: expression • OP_ADD expression
+   21           | expression OP_ADD expression •
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+
+    $default  reduce using rule 21 (expression)
+
+
+State 83
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   23           | expression OP_MUL expression •
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+
+    $default  reduce using rule 23 (expression)
+
+
+State 84
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   24           | expression OP_DIV expression •
+   25           | expression • OP_MOD expression
+
+    $default  reduce using rule 24 (expression)
+
+
+State 85
+
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   25           | expression OP_MOD expression •
+
+    OP_SUB  shift, and go to state 56
+    OP_ADD  shift, and go to state 57
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+
+    $default  reduce using rule 25 (expression)
+
+
+State 86
+
+   14 var_declaration: TYPE_INT IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
+
+    $default  reduce using rule 14 (var_declaration)
+
+
 State 87
 
-   42 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   15 var_declaration: TYPE_DOUBLE IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
 
-    $default  reduce using rule 1 (program)
-
-    program  go to state 93
+    $default  reduce using rule 15 (var_declaration)
 
 
 State 88
 
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   16 var_declaration: TYPE_BOOL IDENTIFIER ASSIGNMENT_OP expression SEMICOLON •
 
-    $default  reduce using rule 1 (program)
-
-    program  go to state 94
+    $default  reduce using rule 16 (var_declaration)
 
 
 State 89
 
-   45 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON •
+   31 logical_expression: REL_NOT OPEN_PAREN logical_expression • CLOSE_PAREN
 
-    $default  reduce using rule 45 (read_value)
+    CLOSE_PAREN  shift, and go to state 99
 
 
 State 90
 
-   46 write_value: IO_WRITE OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON •
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   32 relational_expression: expression relation expression •
 
-    $default  reduce using rule 46 (write_value)
+    OP_SUB  shift, and go to state 56
+    OP_ADD  shift, and go to state 57
+    OP_MUL  shift, and go to state 58
+    OP_DIV  shift, and go to state 59
+    OP_MOD  shift, and go to state 60
+
+    $default  reduce using rule 32 (relational_expression)
 
 
 State 91
 
-   29 logical_expression: REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN •
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
 
-    $default  reduce using rule 29 (logical_expression)
+    $default  reduce using rule 1 (program)
+
+    program  go to state 100
 
 
 State 92
 
-    2 program: program • input
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
+   21 expression: expression • OP_ADD expression
+   22           | expression • OP_SUB expression
+   23           | expression • OP_MUL expression
+   24           | expression • OP_DIV expression
+   25           | expression • OP_MOD expression
+   32 relational_expression: expression • relation expression
 
-    error        shift, and go to state 3
-    IDENTIFIER   shift, and go to state 4
-    TYPE_INT     shift, and go to state 5
-    TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    CLOSE_BRACE  shift, and go to state 95
-    SEMICOLON    shift, and go to state 11
+    REL_NOTEQ  shift, and go to state 66
+    REL_EQ     shift, and go to state 67
+    REL_LT     shift, and go to state 68
+    REL_GT     shift, and go to state 69
+    REL_LTE    shift, and go to state 70
+    REL_GTE    shift, and go to state 71
+    OP_SUB     shift, and go to state 56
+    OP_ADD     shift, and go to state 57
+    OP_MUL     shift, and go to state 58
+    OP_DIV     shift, and go to state 59
+    OP_MOD     shift, and go to state 60
 
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
+    relation  go to state 72
 
 
 State 93
 
-    2 program: program • input
-   42 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
-   43             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   29 logical_expression: relational_expression REL_AND relational_expression •
 
-    error        shift, and go to state 3
-    IDENTIFIER   shift, and go to state 4
-    TYPE_INT     shift, and go to state 5
-    TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    CLOSE_BRACE  shift, and go to state 96
-    SEMICOLON    shift, and go to state 11
-
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
+    $default  reduce using rule 29 (logical_expression)
 
 
 State 94
 
-    2 program: program • input
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
-   41             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+   30 logical_expression: relational_expression REL_OR relational_expression •
 
-    error        shift, and go to state 3
-    IDENTIFIER   shift, and go to state 4
-    TYPE_INT     shift, and go to state 5
-    TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    CLOSE_BRACE  shift, and go to state 97
-    SEMICOLON    shift, and go to state 11
-
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
+    $default  reduce using rule 30 (logical_expression)
 
 
 State 95
 
-   44 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
+   46 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
-    $default  reduce using rule 44 (while_statement)
+    $default  reduce using rule 1 (program)
+
+    program  go to state 101
 
 
 State 96
 
-   42 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
-   43             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE • KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    KEY_ELSE  shift, and go to state 98
-
-    $default  reduce using rule 42 (if_statement)
-
-
-State 97
-
-   40 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
-   41             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE • KEY_ELSE OPEN_BRACE program CLOSE_BRACE
-
-    KEY_ELSE  shift, and go to state 99
-
-    $default  reduce using rule 40 (if_statement)
-
-
-State 98
-
-   43 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE • OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_BRACE  shift, and go to state 100
-
-
-State 99
-
-   41 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE • OPEN_BRACE program CLOSE_BRACE
-
-    OPEN_BRACE  shift, and go to state 101
-
-
-State 100
-
-   43 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE • program CLOSE_BRACE
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE • program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
     $default  reduce using rule 1 (program)
 
     program  go to state 102
 
 
+State 97
+
+   49 read_value: IO_READ OPEN_PAREN IDENTIFIER CLOSE_PAREN SEMICOLON •
+
+    $default  reduce using rule 49 (read_value)
+
+
+State 98
+
+   50 write_value: IO_WRITE OPEN_PAREN expression CLOSE_PAREN SEMICOLON •
+
+    $default  reduce using rule 50 (write_value)
+
+
+State 99
+
+   31 logical_expression: REL_NOT OPEN_PAREN logical_expression CLOSE_PAREN •
+
+    $default  reduce using rule 31 (logical_expression)
+
+
+State 100
+
+    2 program: program • input
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
+
+    error        shift, and go to state 3
+    IDENTIFIER   shift, and go to state 4
+    TYPE_INT     shift, and go to state 5
+    TYPE_DOUBLE  shift, and go to state 6
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    CLOSE_BRACE  shift, and go to state 103
+    SEMICOLON    shift, and go to state 12
+
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
+
+
 State 101
 
-   41 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE • program CLOSE_BRACE
+    2 program: program • input
+   46 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
+   47             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
-    $default  reduce using rule 1 (program)
+    error        shift, and go to state 3
+    IDENTIFIER   shift, and go to state 4
+    TYPE_INT     shift, and go to state 5
+    TYPE_DOUBLE  shift, and go to state 6
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    CLOSE_BRACE  shift, and go to state 104
+    SEMICOLON    shift, and go to state 12
 
-    program  go to state 103
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
 
 
 State 102
 
     2 program: program • input
-   43 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program • CLOSE_BRACE
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE
+   45             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program • CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE
 
     error        shift, and go to state 3
     IDENTIFIER   shift, and go to state 4
     TYPE_INT     shift, and go to state 5
     TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    CLOSE_BRACE  shift, and go to state 104
-    SEMICOLON    shift, and go to state 11
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    CLOSE_BRACE  shift, and go to state 105
+    SEMICOLON    shift, and go to state 12
 
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
 
 
 State 103
 
+   48 while_statement: KEY_WHILE OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
+
+    $default  reduce using rule 48 (while_statement)
+
+
+State 104
+
+   46 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
+   47             | KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE • KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    KEY_ELSE  shift, and go to state 106
+
+    $default  reduce using rule 46 (if_statement)
+
+
+State 105
+
+   44 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE •
+   45             | KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE • KEY_ELSE OPEN_BRACE program CLOSE_BRACE
+
+    KEY_ELSE  shift, and go to state 107
+
+    $default  reduce using rule 44 (if_statement)
+
+
+State 106
+
+   47 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE • OPEN_BRACE program CLOSE_BRACE
+
+    OPEN_BRACE  shift, and go to state 108
+
+
+State 107
+
+   45 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE • OPEN_BRACE program CLOSE_BRACE
+
+    OPEN_BRACE  shift, and go to state 109
+
+
+State 108
+
+   47 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE • program CLOSE_BRACE
+
+    $default  reduce using rule 1 (program)
+
+    program  go to state 110
+
+
+State 109
+
+   45 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE • program CLOSE_BRACE
+
+    $default  reduce using rule 1 (program)
+
+    program  go to state 111
+
+
+State 110
+
     2 program: program • input
-   41 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program • CLOSE_BRACE
+   47 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program • CLOSE_BRACE
 
     error        shift, and go to state 3
     IDENTIFIER   shift, and go to state 4
     TYPE_INT     shift, and go to state 5
     TYPE_DOUBLE  shift, and go to state 6
-    KEY_WHILE    shift, and go to state 7
-    KEY_IF       shift, and go to state 8
-    IO_READ      shift, and go to state 9
-    IO_WRITE     shift, and go to state 10
-    CLOSE_BRACE  shift, and go to state 105
-    SEMICOLON    shift, and go to state 11
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    CLOSE_BRACE  shift, and go to state 112
+    SEMICOLON    shift, and go to state 12
 
-    input            go to state 12
-    var_declaration  go to state 13
-    var_assignment   go to state 14
-    if_statement     go to state 15
-    while_statement  go to state 16
-    read_value       go to state 17
-    write_value      go to state 18
-
-
-State 104
-
-   43 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE •
-
-    $default  reduce using rule 43 (if_statement)
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
 
 
-State 105
+State 111
 
-   41 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE •
+    2 program: program • input
+   45 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program • CLOSE_BRACE
 
-    $default  reduce using rule 41 (if_statement)
+    error        shift, and go to state 3
+    IDENTIFIER   shift, and go to state 4
+    TYPE_INT     shift, and go to state 5
+    TYPE_DOUBLE  shift, and go to state 6
+    TYPE_BOOL    shift, and go to state 7
+    KEY_WHILE    shift, and go to state 8
+    KEY_IF       shift, and go to state 9
+    IO_READ      shift, and go to state 10
+    IO_WRITE     shift, and go to state 11
+    CLOSE_BRACE  shift, and go to state 113
+    SEMICOLON    shift, and go to state 12
+
+    input            go to state 13
+    var_declaration  go to state 14
+    var_assignment   go to state 15
+    if_statement     go to state 16
+    while_statement  go to state 17
+    read_value       go to state 18
+    write_value      go to state 19
+
+
+State 112
+
+   47 if_statement: KEY_IF OPEN_PAREN error CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE •
+
+    $default  reduce using rule 47 (if_statement)
+
+
+State 113
+
+   45 if_statement: KEY_IF OPEN_PAREN logical_expression CLOSE_PAREN OPEN_BRACE program CLOSE_BRACE KEY_ELSE OPEN_BRACE program CLOSE_BRACE •
+
+    $default  reduce using rule 45 (if_statement)
